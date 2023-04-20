@@ -27,10 +27,10 @@
                 emissions_pct: d['1001']
                 // FIPS: d.FIPS,
                 // agriculture: d.TONCO2E_AG_PERCENT,
-                // cn: d.TONCO2E_CN_PERCENT,
+                // construction: d.TONCO2E_CN_PERCENT,
                 // commercial: d.TONCO2E_COMM_PERCENT,
                 // manufacturing:d.TONCO2E_MF_PERCENT,
-                // mn_rest: d.TONCO2E_MN_REST_PERCENT,
+                // mining: d.TONCO2E_MN_REST_PERCENT,
                 // power: d.TONCO2E_PWR_PERCENT,
                 // oilgas: d.TONCO2E_OG_PERCENT,
                 // coal: d.TONCO2E_COAL_PERCENT ,     
@@ -57,11 +57,6 @@
 
         });
 
-
-
-
-    
-    //let pie_keys = ["TONCO2E_AG_PERCENT","TONCO2E_CN_PERCENT"]
     $: {
         //filter dataset to the county you care about (THIS SHOULD BE CHANGED LATER)
         countyData = panel_data.filter(d => d.FIPS === '01001')
