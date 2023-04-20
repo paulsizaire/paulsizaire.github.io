@@ -1,2 +1,9 @@
-<h1>Welcome to SvelteKit! I love my team :)</h1>
+<script>
+    import PanelApp from '../components/PanelApp.svelte';
+</script>
+
+
+
+<h1>Welcome to SvelteKit! I love my team</h1>
 <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<PanelApp />
