@@ -2,26 +2,35 @@
 
     import * as d3 from 'd3' ;
 
+
     let arcGenerator = d3.arc()
 		.innerRadius(5)
 		.outerRadius(50)
 		.padAngle(.015)
 		.cornerRadius(4);
 
-    let pieAngleGenerator = d3.pie().value( d => d.count );
-	
-    // let sample_data = [
-	// 	{animal: "cat", count: 1},
-	// 	{animal: "dog", count: 4},
-	// 	{animal: "rabbit", count: 5},
-	// 	{animal: "hamster", count: 2},
-	// 	{animal: "pony", count: 4}
-	// ]
-	export let sample_data
-	
-    let arc_data = pieAngleGenerator(sample_data);
+	let pieAngleGenerator = d3.pie().value( d => d.employment_pct);  
 
-	//console.log(JSON.stringify(arc_data));
+	
+	export let employment_data 
+
+
+	$: {
+		// interactive data here
+		console.log(employment_data)
+		// for (let key in countydata)  {
+		// 	//console.log(countydata[key])
+		// 	console.log(key)
+		// }
+	}
+
+
+	let arc_data = pieAngleGenerator(employment_data);
+
+	$: {
+		arc_data = pieAngleGenerator(employment_data);
+		console.log(JSON.stringify(arc_data));
+	}
 
 	const arc_color = d3.scaleLinear()
 		.range(["#faffd1", "#db921d", "#b86a04", "#a65d29" ,"#6e3003"])
@@ -34,19 +43,18 @@
 	};
 
 
-	$: {
-		// interactive data here
-		// console.log(JSON.stringify(todo_record));		
-	}
-
-
     
 </script>
+
+<!-- {#each emissions_county_data as d} 
+	{console.log(d.FIPS)}
+{/each} -->
 
 <div class="visualization">
     <svg width="500" height="500">
         <g transform="translate(350, 50)">
             <!-- Place for Pie -->
+			<!-- {arc_data} -->
             {#each arc_data as data, index}
             <path 
                 d={arcGenerator({
@@ -68,11 +76,9 @@
 	<div class={hovered === -1 ? "tooltip-hidden": "tooltip-visible"}
 			style="left: {recorded_mouse_position.x + 40}px; top: {recorded_mouse_position.y + 40}px" >
 		{#if hovered !== -1}
-		   You're hovering!
-		    <!-- 
-			There are { arc_data[hovered].data[1] } 
-			record{ arc_data[hovered].data[1]===1 ? "" : "s" } 
-			where you have { arc_data[hovered].data[0] } todo items. -->
+		<!-- You're hovering! -->
+		   {arc_data[hovered].data.industry}
+
 		{/if}
 		
 	
