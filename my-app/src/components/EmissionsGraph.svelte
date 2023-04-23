@@ -28,10 +28,12 @@
 		console.log(JSON.stringify(arc_data));
 	}
 
-	const arc_color = d3
-		.scaleLinear()
-		.range(["#faffd1", "#db921d", "#b86a04", "#a65d29", "#6e3003"])
-		.domain([0, 3, 6, 9, 12]);
+
+	const arc_color= d3
+		.scaleOrdinal()
+		.range(d3.schemeSet1)
+		.domain([0,1,2,3,4,5,6,7]);
+
 
 	let hovered = -1;
 
@@ -56,7 +58,7 @@
 						startAngle: data.startAngle,
 						endAngle: data.endAngle,
 					})}
-					fill={index === hovered ? "brown" : arc_color(data.data[0])}
+					fill={index === hovered ? "black" : arc_color(data.data.industry)}
 					on:mouseover={(event) => {
 						hovered = index;
 						recorded_mouse_position = {
@@ -114,3 +116,4 @@
 		padding: 10px;
 	}
 </style>
+

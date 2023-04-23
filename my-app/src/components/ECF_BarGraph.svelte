@@ -13,8 +13,6 @@
 
   $: xDomain = ecf_data.map((d) => d.scale); 
   $: yDomain = ecf_data.map((d) => +d.ECF);
-  // $: xDomain = ecf_data.map((d) => d.ECF); 
-  // $: yDomain = ecf_data.map((d) => d.scale);
 
 
   $: console.log(xDomain)
