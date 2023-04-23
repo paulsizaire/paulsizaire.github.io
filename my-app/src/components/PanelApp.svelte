@@ -8,7 +8,7 @@
 
     //load socio-economic data
     let socioeconFile =
-        "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/main/socioec_ECF.csv";
+        "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/socioeconomic-panel/ACS/socioec_ECF.csv";
 
     //load emissions data
     let emissionsFile =
@@ -67,13 +67,15 @@
 
     $: {
         //filter dataset to the county you care about (THIS SHOULD BE CHANGED LATER)
-        countyData = panel_data.filter((d) => d.FIPS === "01001"); //change to FIPScode
+        countyData = panel_data.filter((d) => d.FIPS === "1001"); //change to FIPScode
         //emissions_county_data = emissions_data['01001']
     } //lab 9
 
     $: {
         console.log(ecf_data);
     }
+
+    // Math.round(num)
 </script>
 
 <Box>
@@ -82,9 +84,9 @@
             {#each countyData as d}
                 <!-- add more county level stats here if you want to -->
                 <h1>{d.county}, {d.state}</h1>
-                <p>Migrant Population: {d.mig_pop}</p>
-                <p>Total Population: {d.population}</p>
-                <p>Poverty Rate: {d.poverty_rate}</p>
+                <p>Migrant Population: {Math.round(d.mig_pop)}</p>
+                <p>Total Population: {Math.round(d.population)}</p>
+                <p>Poverty Rate: {Math.round(d.poverty_rate*100)} %</p>
             {/each}
         </div>
         <div class="column">

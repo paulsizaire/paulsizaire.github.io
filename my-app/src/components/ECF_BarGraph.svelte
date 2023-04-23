@@ -15,7 +15,7 @@
   $: yDomain = ecf_data.map((d) => +d.ECF);
 
 
-  $: console.log(xDomain)
+  $: console.log(ecf_data[0])
 
   $: yScale = scaleBand().domain(xDomain).range([0, innerHeight]).padding(0.1);
   $: xScale = scaleLinear()
@@ -27,6 +27,19 @@
   x: 0, y: 0
 };
 
+  const bar_colors = d3
+  .scaleOrdinal(d3.schemeGreys)
+  .domain([0,1,2])
+
+  const barcolors = [
+  	{ scale: 'County', color: "black" },
+  	{ scale: 'State', color: "gray" },
+  	{ scale: 'National', color: "gray" }
+	];
+
+
+  console.log(barcolors[0].color)
+
 </script>
 
 
@@ -36,7 +49,7 @@
 
 
       {#each ecf_data as d, index}
-        {console.log(index)}
+        {console.log(d)}
         <text
           text-anchor="end"
           x="-3"
@@ -51,7 +64,7 @@
           y={yScale(d.scale)}
           width={xScale(d.ECF)}
           height={yScale.bandwidth()}
-          fill={index === hovered ? "brown":"faffd1" }
+          fill={index === hovered ? "brown": barcolors[index].color}
           on:mouseover={(event) => { hovered = index;
             recorded_mouse_position = {
             x: event.pageX,
