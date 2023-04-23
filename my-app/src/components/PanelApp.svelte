@@ -23,7 +23,7 @@
         "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/socioeconomic-panel/ACS/ecf.csv";
 
     //set stats you want to show
-    let FIPScode;
+    let FIPScode = "1001";
     let countyData = [];
     let emissions_data = [];
     let panel_data = [];
@@ -34,21 +34,21 @@
         emissions_data = await d3.csv(emissionsFile, function (d) {
             return {
                 industry: d.FIPS,
-                emissions_pct: d["1001"], //change to FIPScode=
+                emissions_pct: d[FIPScode], //change to FIPScode=
             };
         });
 
         employment_data = await d3.csv(employmentFile, function (d) {
             return {
                 industry: d.FIPS,
-                employment_pct: d["1001"], //change to FIPScode=
+                employment_pct: d[FIPScode], //change to FIPScode=
             };
         });
 
         ecf_data = await d3.csv(ecfFile, function (d) {
             return {
                 scale: d.FIPS,
-                ECF: d["1001"], //change to FIPScode=
+                ECF: d[FIPScode], //change to FIPScode=
             };
         });
 
@@ -67,7 +67,7 @@
 
     $: {
         //filter dataset to the county you care about (THIS SHOULD BE CHANGED LATER)
-        countyData = panel_data.filter((d) => d.FIPS === "1001"); //change to FIPScode
+        countyData = panel_data.filter((d) => d.FIPS === FIPScode); //change to FIPScode
         //emissions_county_data = emissions_data['01001']
     } //lab 9
 

@@ -45,7 +45,18 @@
 
 <div class="visualization">
 <svg {width} {height}>
+
+
+
     <g transform={`translate(${margin.left},${margin.top})`}>
+      {#each xScale.ticks() as tickValue}
+        <g transform={`translate(${xScale(tickValue)},0)`}>
+          <line y2={innerHeight} stroke="black" />
+          <text text-anchor="middle" dy=".7em" y={innerHeight +3} >
+            {tickValue}
+          </text>
+        </g>
+    {/each}
 
 
       {#each ecf_data as d, index}
@@ -93,9 +104,9 @@
 
 <style>
 .visualization {
-  font: 15px sans-serif;
+  font: 7px sans-serif;
   margin: auto;
-  margin-top: 1px;
+  margin-top: 0.5px;
   text-align: middle;
 }
 
@@ -117,5 +128,9 @@
   color: black;
   position: absolute;
   padding: 10px;
+}
+
+.xticks {
+  transform: rotate(-90deg);
 }
 </style>
