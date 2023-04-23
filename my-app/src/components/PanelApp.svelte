@@ -8,7 +8,7 @@
 
     //load socio-economic data
     let socioeconFile =
-        "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/main/socioec_ECF.csv";
+        "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/socioeconomic-panel/ACS/socioec_ECF.csv";
 
     //load emissions data
     let emissionsFile =
@@ -16,11 +16,11 @@
 
     //load employment data
     let employmentFile =
-        "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/main/ACS/employment.csv";
+        "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/socioeconomic-panel/ACS/employment.csv";
 
     //load employment data
     let ecfFile =
-        "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/main/ACS/ecf.csv";
+        "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/socioeconomic-panel/ACS/ecf.csv";
 
     //set stats you want to show
     let FIPScode;
