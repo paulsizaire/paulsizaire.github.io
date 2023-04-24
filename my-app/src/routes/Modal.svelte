@@ -1,63 +1,63 @@
 <script>
-    export let showModal; // boolean
+    import { closeModal } from "svelte-modals";
 
-    let dialog; // HTMLDialogElement
+    // provided by <Modals />
+    export let isOpen;
 
-    $: if (dialog && showModal) dialog.showModal();
+    export let title;
+    export let message;
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<dialog
-    bind:this={dialog}
-    on:close={() => (showModal = false)}
-    on:click|self={() => dialog.close()}
->
-    <div on:click|stopPropagation>
-        <slot name="header" />
-        <hr />
-        <slot />
-        <hr />
-        <!-- svelte-ignore a11y-autofocus -->
-        <button autofocus on:click={() => dialog.close()}>close</button>
+{#if isOpen}
+    <div role="dialog" class="modal">
+        <div class="contents">
+            <h2>{title}</h2>
+            <p>{message}</p>
+            <div class="actions">
+                <button on:click={closeModal}>OK</button>
+            </div>
+        </div>
     </div>
-</dialog>
+{/if}
 
 <style>
-    dialog {
-        max-width: 32em;
-        border-radius: 0.2em;
-        border: none;
-        padding: 0;
+    .modal {
+        position: absolute;
+        top: 50px;
+        left: 0px;
+        width: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        /* allow click-through to backdrop */
+        pointer-events: none;
     }
-    dialog::backdrop {
-        background: rgba(0, 0, 0, 0.3);
+
+    .contents {
+        min-width: 240px;
+        border-radius: 6px;
+        padding: 16px;
+        background: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        pointer-events: auto;
     }
-    dialog > div {
-        padding: 1em;
+
+    h2 {
+        text-align: center;
+        font-size: 24px;
     }
-    dialog[open] {
-        animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    p {
+        text-align: center;
+        margin-top: 16px;
     }
-    @keyframes zoom {
-        from {
-            transform: scale(0.95);
-        }
-        to {
-            transform: scale(1);
-        }
-    }
-    dialog[open]::backdrop {
-        animation: fade 0.2s ease-out;
-    }
-    @keyframes fade {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-    button {
-        display: block;
+
+    .actions {
+        margin-top: 32px;
+        display: flex;
+        justify-content: flex-end;
     }
 </style>
