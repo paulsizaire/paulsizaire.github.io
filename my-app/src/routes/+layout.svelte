@@ -1,3 +1,7 @@
+<script>
+    import { Modals, closeModal } from "svelte-modals";
+</script>
+
 <nav style="height:50px">
     <ul>
         <li><a href="/">Map</a></li>
@@ -6,6 +10,10 @@
 </nav>
 
 <slot />
+
+<Modals>
+    <div slot="backdrop" class="backdrop" on:click={closeModal} />
+</Modals>
 
 <style>
     ul {
@@ -36,5 +44,14 @@
 
     .active {
         background-color: #04aa6d;
+    }
+
+    .backdrop {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.5);
     }
 </style>
