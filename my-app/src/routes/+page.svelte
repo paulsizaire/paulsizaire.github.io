@@ -1,4 +1,5 @@
 <script>
+    import PanelApp from "../components/PanelApp.svelte";
     import mapboxgl from "mapbox-gl";
     import { onMount } from "svelte";
     import * as d3 from "d3";
@@ -20,6 +21,8 @@
     let uniqueStates = [];
     let counties = [];
     let selectedState = "";
+    let selectedCounty = "";
+    let FIPScode;
 
     onMount(async () => {
         const requestURL =
@@ -115,7 +118,19 @@
     }
 
     function zoomToCounty(event) {
-        const selectedCounty = event.currentTarget.value;
+        selectedCounty = event.currentTarget.value;
+
+        const countyData = data.find(
+            (row) =>
+                row.county === selectedCounty &&
+                row.state_name === selectedState
+        );
+
+        if (countyData) {
+            FIPScode = countyData.county_fips;
+        } else {
+            FIPScode = "";
+        }
 
         fetch(
             `https://api.mapbox.com/geocoding/v5/mapbox.places/${selectedCounty}.json?types=district&access_token=pk.eyJ1Ijoia2FpbGluZ3JhaGFtIiwiYSI6ImNsZzg2d3gwMDAybWczbG1tenV5Z3hvZDMifQ.LbDSd2q9tN0i-rxqaN9VQA`
@@ -225,6 +240,9 @@
     <div class="column right">
         <div id="map" />
     </div>
+    {#if selectedCounty}
+        <PanelApp {FIPScode} />
+    {/if}
 </div>
 
 <style>
