@@ -3,6 +3,7 @@
     import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
     //import Modal from "./Modal.svelte";
     import { onMount } from "svelte";
+    import { csv } from "d3";
 
     import { openModal } from "svelte-modals";
     import Modal from "./Modale.svelte";
@@ -13,6 +14,14 @@
 
     let map;
     let sliderValue = 0;
+
+    let data = [];
+
+    onMount(async () => {
+        const response = await fetch("csv-endpoint");
+        data = await response.json();
+        console.log(data);
+    });
 
     onMount(() => {
         mapboxgl.accessToken =
