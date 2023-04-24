@@ -86,8 +86,8 @@
 
 	<div
 		class={hovered === -1 ? "tooltip-hidden" : "tooltip-visible"}
-		style="left: {recorded_mouse_position.x +
-			40}px; top: {recorded_mouse_position.y + 40}px"
+		style="left: {recorded_mouse_position.x -270
+		}px; top: {recorded_mouse_position.y - 100}px"
 	>
 		{#if hovered !== -1}
 			<!-- You're hovering! -->
