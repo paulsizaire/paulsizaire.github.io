@@ -33,7 +33,6 @@
     let ecf_data = [];
 
     async function fetchEmissionsData() {
-        console.log("Yooo! This is the fips: ", FIPScode);
         if (FIPScode) {
             emissions_data = await d3.csv(emissionsFile, function (d) {
                 return {

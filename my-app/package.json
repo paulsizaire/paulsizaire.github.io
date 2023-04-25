@@ -21,6 +21,7 @@
 	"dependencies": {
 		"@mapbox/mapbox-gl-geocoder": "^5.0.1",
 		"d3": "^7.8.4",
-		"svelte-modals": "^1.2.1"
+		"svelte-modals": "^1.2.1",
+		"topojson": "^3.0.2"
 	}
 }
