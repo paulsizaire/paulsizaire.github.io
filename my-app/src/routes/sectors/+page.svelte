@@ -30,6 +30,25 @@
     let svg;
     let zoom;
 
+    import { openModal } from "svelte-modals";
+    import Modal from "./Modal.svelte";
+
+    function handleClick() {
+        openModal(Modal, {
+            title: "The Employee Carbon Footprint Explained",
+            message: "Here is an explanation of all our fantastic work",
+            step: step,
+        });
+        step += 1;
+    }
+
+    let step = 0;
+
+    function resetStep() {
+    step =0;
+    }
+
+
     onMount(async () => {
         const requestURL =
             "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/paul/my-app/static/unemployment-x.csv";
@@ -403,6 +422,22 @@
     </select>
 {/if}
 <div id="chart-container" />
+
+<div class="tutorial">
+    {#if step === 0}
+      <h2>Welcome to the Tutorial!</h2>
+      <p>Step 1 content goes here...</p>
+      <button on:click={handleClick}>Start</button>
+    {:else if step === 1}
+      <h2>Step 2: county!</h2>
+      <p>zoom to county.</p>
+      <button on:click={handleClick}>Next Step</button>
+    {:else if step === 2}
+      <h2>Step 3: Play with filter</h2>
+      <p>Play w/ filter</p>
+      <button on:click={resetStep}>Reset</button>
+    {/if}
+  </div>
 
 <style>
     #chart-container {
