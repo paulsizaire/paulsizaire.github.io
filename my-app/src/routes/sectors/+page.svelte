@@ -346,7 +346,7 @@
                 value: (d) => d.rate,
                 scale: d3.scaleQuantize,
                 domain: [1, 10],
-                range: d3.schemeBlues[9],
+                range: d3.schemeBlues[4],
                 // title: (f, d) =>
                 //     `${f.properties.name}, ${
                 //         statemap.get(f.id.slice(0, 2)).properties.name
