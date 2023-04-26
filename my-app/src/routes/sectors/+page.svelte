@@ -11,6 +11,24 @@
     let chart;
     let ecf;
     let processedData;
+    let svgNode;
+    let selectedState = "";
+    let selectedCounty = "";
+    let stateNames;
+    let usnames = [];
+    let uniqueStates = [];
+    let counties_list = [];
+    let counties_for_zoom;
+    let counties_fips;
+
+    let path;
+    let width;
+    let height;
+    let initialScale;
+    let offsetX;
+    let offsetY;
+    let svg;
+    let zoom;
 
     onMount(async () => {
         const requestURL =
@@ -19,7 +37,6 @@
             ...d,
             rate: +d.rate,
         }));
-        console.log(unemployment);
 
         const requestURLUS =
             "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/paul/my-app/static/counties-albers-10m.json";
@@ -36,36 +53,101 @@
             });
         });
         ecf = await d3.json(requestURLECF);
-        console.log("The ecf is: ", processedData);
+
+        const requestURLUSNAMES =
+            "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/paul/my-app/static/uscounties.csv";
+        usnames = await d3.csv(requestURLUSNAMES);
 
         counties = topojson.feature(us, us.objects.counties);
+        counties_for_zoom = new Map(
+            counties.features.map((d) => [d.properties.name, d])
+        );
+
+        counties_fips = new Map(counties.features.map((d) => [d.id, d]));
 
         states = topojson.feature(us, us.objects.states);
 
-        statemap = new Map(states.features.map((d) => [d.id, d]));
+        statemap = new Map(states.features.map((d) => [d.properties.name, d]));
+        stateNames = Array.from(statemap.keys());
 
         statemesh = topojson.mesh(us, us.objects.states, (a, b) => a !== b);
+    });
 
-        chart = Choropleth(processedData, {
-            id: (d) => d.id,
-            value: (d) => d.rate,
-            scale: d3.scaleQuantize,
-            domain: [1, 10],
-            range: d3.schemeBlues[9],
-            title: (f, d) =>
-                `${f.properties.name}, ${
-                    statemap.get(f.id.slice(0, 2)).properties.name
-                }\n${d?.rate} gCO2/employee`,
-            features: counties,
-            borders: statemesh,
-            width: 975,
-            height: 610,
+    async function selectState(event) {
+        selectedState = event.currentTarget.value;
+        if (!selectedState) {
+            // If no state is selected, clear the counties dropdown and return
+            counties_list = [];
+            return;
+        }
+
+        const data_state = usnames.filter(
+            (row) => row.state_name === selectedState
+        );
+        data_state.sort(function (a, b) {
+            return d3.ascending(a.county, b.county);
         });
 
-        console.log(chart);
+        counties_list = data_state.map((row) => row.county);
+    }
 
-        d3.select("#chart-container").node().appendChild(chart);
-    });
+    function handleStateSelection(event) {
+        selectedState = event.target.value;
+        if (selectedState === "") {
+            resetZoom();
+            return;
+        }
+
+        const stateFeature = statemap.get(selectedState);
+        zoomToFeature(stateFeature);
+    }
+
+    function handleCountySelection(event) {
+        selectedCounty = event.target.value;
+
+        const countyData = usnames.find(
+            (row) =>
+                row.county === selectedCounty &&
+                row.state_name === selectedState
+        );
+
+        if (selectedCounty === "") {
+            resetZoom();
+            return;
+        }
+
+        const countyFeature = counties_fips.get(countyData.county_fips);
+        zoomToFeature(countyFeature);
+    }
+
+    function zoomToFeature(feature) {
+        const bounds = path.bounds(feature);
+        const [[x0, y0], [x1, y1]] = bounds;
+
+        const centerX = (x0 + x1) / 2;
+        const centerY = (y0 + y1) / 2;
+
+        const scale = 0.7 / Math.max((x1 - x0) / width, (y1 - y0) / height);
+
+        svg.transition()
+            .duration(750)
+            .call(
+                zoom.transform,
+                d3.zoomIdentity
+                    .translate(width / 2, (height - 200) / 2)
+                    .scale(scale)
+                    .translate(-centerX, -centerY)
+            );
+    }
+
+    function resetZoom() {
+        svg.transition()
+            .duration(750)
+            .call(
+                zoom.transform,
+                d3.zoomIdentity.translate(offsetX, offsetY).scale(initialScale)
+            );
+    }
 
     function Choropleth(
         data,
@@ -77,8 +159,8 @@
             scale = d3.scaleSequential, // type of color scale
             domain, // [min, max] values; input of color scale
             range = d3.interpolateBlues, // output of color scale
-            width = 640, // outer width, in pixels
-            height, // outer height, in pixels
+            width = window.innerWidth, // Change this line
+            height = window.innerHeight - 50, // Change this line
             projection, // a D3 projection; null for pre-projected geometry
             features, // a GeoJSON feature collection
             featureId = (d) => d.id, // given a feature, returns its id
@@ -93,7 +175,9 @@
             strokeLinejoin = "round", // stroke line join for borders
             strokeWidth, // stroke width for borders
             strokeOpacity, // stroke opacity for borders
+            padding = 150, // padding around the map when fitting the projection
         } = {}
+        //selectedState
     ) {
         // Compute values.
         const N = d3.map(data, id);
@@ -154,11 +238,23 @@
 
         const g = svg.append("g");
 
+        const bounds = path.bounds(features);
+
+        const scaleX = (width - padding * 2) / (bounds[1][0] - bounds[0][0]);
+        const scaleY = (height - padding * 2) / (bounds[1][1] - bounds[0][1]);
+        const initialScale = Math.max(scaleX, scaleY);
+
+        const offsetX =
+            (width - initialScale * (bounds[1][0] + bounds[0][0])) / 2;
+        const offsetY =
+            (height - initialScale * (bounds[1][1] + bounds[0][1])) / 2 - 100;
+
         g.selectAll("path")
             .data(features.features)
             .join("path")
             .attr("fill", (d, i) => color(V[Im.get(If[i])]))
             .attr("d", path)
+            .on("click", handleCountyClick)
             .append("title")
             .text((d, i) => title(d, Im.get(If[i])));
 
@@ -173,6 +269,11 @@
                 .attr("stroke-opacity", strokeOpacity)
                 .attr("d", path(borders))
                 .attr("id", "state-boundaries");
+
+        svg.attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height])
+            .attr("style", "width: 100%; height: auto; height: intrinsic;");
 
         const zoom = d3
             .zoom()
@@ -191,17 +292,125 @@
 
         svg.call(zoom);
 
-        return Object.assign(svg.node(), { scales: { color } });
+        svg.call(
+            zoom.transform,
+            d3.zoomIdentity.translate(offsetX, offsetY).scale(initialScale)
+        );
+
+        function handleCountyClick(event, d) {
+            // Calculate the bounding box of the clicked county
+            const bounds = path.bounds(d);
+            const [[x0, y0], [x1, y1]] = bounds;
+
+            // Calculate the center point of the bounding box
+            const centerX = (x0 + x1) / 2;
+            const centerY = (y0 + y1) / 2;
+
+            // Calculate the scale needed to zoom in
+            const scale = 0.7 / Math.max((x1 - x0) / width, (y1 - y0) / height);
+
+            // Apply the zoom transformation
+            svg.transition()
+                .duration(750)
+                .call(
+                    zoom.transform,
+                    d3.zoomIdentity
+                        .translate(width / 2, (height - 200) / 2)
+                        .scale(scale)
+                        .translate(-centerX, -centerY)
+                );
+        }
+
+        const chartProperties = {
+            node: svg.node(),
+            scales: { color },
+            path,
+            width,
+            height,
+            g,
+            svg,
+            zoom,
+            initialScale,
+            offsetX,
+            offsetY,
+        };
+
+        return chartProperties;
+    }
+
+    $: if (processedData && statemap && counties && statemesh) {
+        chart = Choropleth(
+            processedData,
+            {
+                id: (d) => d.id,
+                value: (d) => d.rate,
+                scale: d3.scaleQuantize,
+                domain: [1, 10],
+                range: d3.schemeBlues[9],
+                // title: (f, d) =>
+                //     `${f.properties.name}, ${
+                //         statemap.get(f.id.slice(0, 2)).properties.name
+                //     }\n${d?.rate} gCO2/employee`,
+                features: counties,
+                borders: statemesh,
+                width: 1400,
+                height: 900,
+            }
+            //selectedState
+        );
+    }
+
+    $: if (chart) {
+        svgNode = chart.node;
+        svg = chart.svg;
+        path = chart.path;
+        width = chart.width;
+        zoom = chart.zoom;
+        height = chart.height;
+        initialScale = chart.initialScale;
+        offsetX = chart.offsetX;
+        offsetY = chart.offsetY;
+        d3.select("#chart-container").node().appendChild(svgNode);
+    }
+
+    $: {
+        if (usnames.length > 0) {
+            usnames.sort(function (a, b) {
+                return d3.ascending(a.state_name, b.state_name);
+            });
+
+            const stateSet = new Set();
+            usnames.forEach((row) => {
+                stateSet.add(row.state_name); // Replace 'state' with the appropriate column name for states
+            });
+            uniqueStates = Array.from(stateSet);
+        }
     }
 </script>
 
+<select on:change={handleStateSelection} on:change={selectState}>
+    <option value="" disabled selected>Select a state</option>
+    {#each uniqueStates as state}
+        <option value={state}>{state}</option>
+    {/each}
+</select>
+{#if selectedState}
+    <select on:change={handleCountySelection}>
+        <option value="">Select a county</option>
+        {#each counties_list as county}
+            <option value={county}>{county}</option>
+        {/each}
+    </select>
+{/if}
 <div id="chart-container" />
 
 <style>
     #chart-container {
-        /* Add your custom styles here */
         width: 100%;
-        max-width: 960px;
+        height: calc(
+            100% - 50px
+        ); /* 100% of the viewport height minus the 50px navigation bar height */
         margin: 0 auto;
+        position: relative;
     }
 </style>
