@@ -24,7 +24,7 @@
             </div>
         </div>
     {:else if step === 1}:
-    <div role="dialog" class="modal">
+    <div role="dialog" class="modal1">
         <div class="contents">
             <h2>{title}</h2>
             <p>{message}</p>
@@ -34,7 +34,29 @@
         </div>
     </div>
     {:else if step === 2}:
-    <div role="dialog" class="modal">
+    <div role="dialog" class="modal1">
+        <div class="contents">
+            <h2>{title}</h2>
+            <p>{message}</p>
+            <div class="actions">
+                <button on:click={closeModal}>OK</button>
+            </div>
+        </div>
+    </div>
+
+    {:else if step === 3}:
+    <div role="dialog" class="modal1">
+        <div class="contents">
+            <h2>{title}</h2>
+            <p>{message}</p>
+            <div class="actions">
+                <button on:click={closeModal}>OK</button>
+            </div>
+        </div>
+    </div>
+
+    {:else if step === 4}:
+    <div role="dialog" class="modal2">
         <div class="contents">
             <h2>{title}</h2>
             <p>{message}</p>
@@ -60,10 +82,10 @@
         pointer-events: none;
     }
 
-    .modal {
+    .modal2 {
         position: absolute;
         top: 50px;
-        left: 0px;
+        left: 250px;
         width: 300px;
         display: flex;
         justify-content: center;
