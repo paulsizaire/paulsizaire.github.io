@@ -1,14 +1,15 @@
 <div class="box">
 	<slot />
 </div>
+th
 
 <style>
 	.box {
 		position: absolute;
 		bottom: 0;
-		left: 25%;
+		left: 2%;
 		width: 600px;
-		height: 500px;
+		height: 400px;
 		border: 1px solid #aaa;
 		border-radius: 2px;
 		z-index: 3;

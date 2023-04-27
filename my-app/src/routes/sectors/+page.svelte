@@ -1,6 +1,7 @@
 <script>
     import * as d3 from "d3";
     import { onMount } from "svelte";
+    import PanelApp from "../../components/PanelApp.svelte";
 
     let unemployment = [];
     let us;
@@ -20,6 +21,9 @@
     let counties_list = [];
     let counties_for_zoom;
     let counties_fips;
+    let migrantThreshold = 0;
+    let color;
+    let FIPScode;
 
     let path;
     let width;
@@ -49,6 +53,8 @@
                 return {
                     id: feature.properties.FIPS,
                     rate: Math.round(feature.properties.ECF),
+                    migrant_pop:
+                        Math.round(feature.properties.MIG_PERCENT * 100) / 100,
                 };
             });
         });
@@ -117,6 +123,13 @@
         }
 
         const countyFeature = counties_fips.get(countyData.county_fips);
+
+        if (countyFeature) {
+            FIPScode = countyData.county_fips;
+        } else {
+            FIPScode = "";
+        }
+
         zoomToFeature(countyFeature);
     }
 
@@ -154,6 +167,7 @@
         {
             id = (d) => d.id, // given d in data, returns the feature id
             value = () => undefined, // given d in data, returns the quantitative value
+            mg_pop = (d) => d.migrant_pop,
             title, // given a feature f and possibly a datum d, returns the hover text
             format, // optional format specifier for the title
             scale = d3.scaleSequential, // type of color scale
@@ -182,6 +196,7 @@
         // Compute values.
         const N = d3.map(data, id);
         const V = d3.map(data, value).map((d) => (d == null ? NaN : +d));
+        const M = d3.map(data, mg_pop).map((d) => (d == null ? NaN : +d));
         const Im = new d3.InternMap(N.map((id, i) => [id, i]));
         const If = d3.map(features.features, featureId);
 
@@ -252,7 +267,14 @@
         g.selectAll("path")
             .data(features.features)
             .join("path")
-            .attr("fill", (d, i) => color(V[Im.get(If[i])]))
+            .attr("fill", (d, i) => {
+                const value = V[Im.get(If[i])];
+                const migrantPercentage = M[Im.get(If[i])];
+                const baseColor = d3.color(color(value));
+                return migrantPercentage >= migrantThreshold
+                    ? baseColor
+                    : d3.rgb(baseColor.r, baseColor.g, baseColor.b, 0.1);
+            })
             .attr("d", path)
             .on("click", handleCountyClick)
             .append("title")
@@ -319,6 +341,22 @@
                         .scale(scale)
                         .translate(-centerX, -centerY)
                 );
+
+            // Set the selectedState and selectedCounty
+            const stateFIPS = d.id.slice(0, 2);
+            const selectedStateInfo = states.features.find(
+                (d) => d.id === stateFIPS
+            );
+            selectedState = selectedStateInfo.properties.name;
+            selectedCounty = d.properties.name;
+
+            // Update the dropdowns with the selected state and county
+            document.getElementById("state-select").value = selectedState;
+            document.getElementById("county-select").value = selectedCounty;
+            selectState({ currentTarget: { value: selectedState } });
+
+            // Simulate an event to handle the county selection
+            handleCountySelection({ target: { value: selectedCounty } });
         }
 
         const chartProperties = {
@@ -328,8 +366,13 @@
             width,
             height,
             g,
+            V,
+            M,
+            Im,
+            If,
             svg,
             zoom,
+            color,
             initialScale,
             offsetX,
             offsetY,
@@ -344,6 +387,7 @@
             {
                 id: (d) => d.id,
                 value: (d) => d.rate,
+                mg_pop: (d) => d.migrant_pop,
                 scale: d3.scaleQuantize,
                 domain: [1, 10],
                 range: d3.schemeBlues[4],
@@ -370,6 +414,7 @@
         initialScale = chart.initialScale;
         offsetX = chart.offsetX;
         offsetY = chart.offsetY;
+        color = chart.color;
         d3.select("#chart-container").node().appendChild(svgNode);
     }
 
@@ -386,22 +431,67 @@
             uniqueStates = Array.from(stateSet);
         }
     }
+
+    $: if (
+        chart &&
+        migrantThreshold !== null &&
+        migrantThreshold !== undefined
+    ) {
+        chart.g.selectAll("path").attr("fill", (d, i) => {
+            const value = chart.V[chart.Im.get(chart.If[i])];
+            const migrantPercentage = chart.M[chart.Im.get(chart.If[i])];
+            const baseColor = d3.color(color(value));
+            return migrantPercentage >= migrantThreshold
+                ? baseColor
+                : d3.rgb(baseColor.r, baseColor.g, baseColor.b, 0.1);
+        });
+    }
 </script>
 
-<select on:change={handleStateSelection} on:change={selectState}>
-    <option value="" disabled selected>Select a state</option>
-    {#each uniqueStates as state}
-        <option value={state}>{state}</option>
-    {/each}
-</select>
-{#if selectedState}
-    <select on:change={handleCountySelection}>
-        <option value="">Select a county</option>
-        {#each counties_list as county}
-            <option value={county}>{county}</option>
-        {/each}
-    </select>
+<div class="panel">
+    <div class="box">
+        <h4>Filter</h4>
+        <div class="box">
+            <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                bind:value={migrantThreshold}
+            />
+            <span>{migrantThreshold * 100}%</span>
+        </div>
+    </div>
+    <div class="box">
+        <h4>Search</h4>
+        <div>
+            <label for="state-select">State:</label>
+            <select
+                id="state-select"
+                on:change={handleStateSelection}
+                on:change={selectState}
+            >
+                <option value="" disabled selected>Select a state</option>
+                {#each uniqueStates as state}
+                    <option value={state}>{state}</option>
+                {/each}
+            </select>
+        </div>
+        <div>
+            <label for="county-select">County:</label>
+            <select id="county-select" on:change={handleCountySelection}>
+                <option value="" disabled selected>Select a county</option>
+                {#each counties_list as county}
+                    <option value={county}>{county}</option>
+                {/each}
+            </select>
+        </div>
+    </div>
+</div>
+{#if selectedCounty}
+    <PanelApp {FIPScode} />
 {/if}
+
 <div id="chart-container" />
 
 <style>
@@ -412,5 +502,24 @@
         ); /* 100% of the viewport height minus the 50px navigation bar height */
         margin: 0 auto;
         position: relative;
+    }
+
+    .panel {
+        position: absolute;
+        top: 60px;
+        left: 10px;
+        background-color: rgba(245, 245, 245, 0.675);
+        border-radius: 5px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 3;
+    }
+
+    .box {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
     }
 </style>

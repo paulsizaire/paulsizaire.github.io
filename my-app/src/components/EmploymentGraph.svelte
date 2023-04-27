@@ -12,26 +12,16 @@
 
 	export let employment_data;
 
-	$: {
-		// interactive data here
-		console.log(employment_data);
-		// for (let key in countydata)  {
-		// 	//console.log(countydata[key])
-		// 	console.log(key)
-		// }
-	}
-
 	let arc_data = pieAngleGenerator(employment_data);
 
 	$: {
 		arc_data = pieAngleGenerator(employment_data);
-		console.log(JSON.stringify(arc_data));
 	}
 
-	const arc_color= d3
+	const arc_color = d3
 		.scaleOrdinal()
 		.range(d3.schemeSet1)
-		.domain([0,1,2,3,4,5,6,7]);
+		.domain([0, 1, 2, 3, 4, 5, 6, 7]);
 
 	let hovered = -1;
 
@@ -41,16 +31,11 @@
 	};
 
 	const legendData = [
-  	{ label: 'Label 1', color: 'blue' },
-  	{ label: 'Label 2', color: 'green' },
-  	{ label: 'Label 3', color: 'red' }
+		{ label: "Label 1", color: "blue" },
+		{ label: "Label 2", color: "green" },
+		{ label: "Label 3", color: "red" },
 	];
-
 </script>
-
-<!-- {#each emissions_county_data as d} 
-	{console.log(d.FIPS)}
-{/each} -->
 
 <div class="visualization">
 	<svg width="200" height="200">
@@ -63,7 +48,9 @@
 						startAngle: data.startAngle,
 						endAngle: data.endAngle,
 					})}
-					fill={index === hovered ? "black" :  arc_color(data.data.industry)}
+					fill={index === hovered
+						? "black"
+						: arc_color(data.data.industry)}
 					on:mouseover={(event) => {
 						hovered = index;
 						recorded_mouse_position = {
@@ -76,18 +63,13 @@
 					}}
 				/>
 			{/each}
-
-
 		</g>
-
-		
 	</svg>
-
 
 	<div
 		class={hovered === -1 ? "tooltip-hidden" : "tooltip-visible"}
-		style="left: {recorded_mouse_position.x -270
-		}px; top: {recorded_mouse_position.y - 100}px"
+		style="left: {recorded_mouse_position.x -
+			270}px; top: {recorded_mouse_position.y - 100}px"
 	>
 		{#if hovered !== -1}
 			<!-- You're hovering! -->
@@ -103,15 +85,16 @@
 		  </div>
 		{/each} -->
 		{#each arc_data as data, index}
-		  <div class="legend-item">
-				<div class="legend-color" style="background-color: { arc_color(data.data.industry)}"></div>
-				<span class="legend-label">{arc_data[index].data.industry }</span> 
-		  </div>
+			<div class="legend-item">
+				<div
+					class="legend-color"
+					style="background-color: {arc_color(data.data.industry)}"
+				/>
+				<span class="legend-label">{arc_data[index].data.industry}</span
+				>
+			</div>
 		{/each}
-	  </div>
-
-
-
+	</div>
 </div>
 
 <style>
@@ -145,34 +128,33 @@
 	}
 
 	.legend-container {
-  	position: absolute;
-  	top: 250px;
-  	right: 10px;
-	}	
-  /* Example: Style legend elements */
-  .legend-container {
-    /* Define container styles */
-	font-size: 14px;
-    color: #333;
+		position: absolute;
+		top: 250px;
+		right: 10px;
+	}
+	/* Example: Style legend elements */
+	.legend-container {
+		/* Define container styles */
+		font-size: 14px;
+		color: #333;
+	}
 
-  }
+	.legend-item {
+		/* Define item styles */
+		display: flex;
+		align-items: center;
+		margin-bottom: 8px;
+	}
 
-  .legend-item {
-    /* Define item styles */
-	display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-  }
+	.legend-color {
+		/* Define color indicator styles */
+		width: 20px;
+		height: 20px;
+		margin-right: 8px;
+	}
 
-  .legend-color {
-    /* Define color indicator styles */
-	width: 20px;
-    height: 20px;
-    margin-right: 8px;
-  }
-
-  .legend-label {
-    /* Define label styles */
-	flex-grow: 1;
-  }
+	.legend-label {
+		/* Define label styles */
+		flex-grow: 1;
+	}
 </style>

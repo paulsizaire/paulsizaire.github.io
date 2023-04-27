@@ -24,8 +24,6 @@
 
     //set stats you want to show
     export let FIPScode;
-    console.log("Data type of fips code: ", typeof FIPScode);
-    console.log(FIPScode);
     let countyData = [];
     let emissions_data = [];
     let panel_data = [];
@@ -83,7 +81,6 @@
 
     $: {
         countyData = panel_data.filter((d) => d.FIPS === FIPScode);
-        console.log("Another fips: ", FIPScode);
     }
 </script>
 
@@ -126,14 +123,14 @@
 <style>
     .row {
         display: flex;
-        height: 250px;
+        height: 200px;
     }
     .column {
         flex: 50%;
     }
 
     .graph {
-        height: 100 px;
+        height: 90 px;
     }
 
     h1 {

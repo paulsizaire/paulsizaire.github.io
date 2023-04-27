@@ -12,28 +12,16 @@
 
 	export let emissions_data;
 
-	$: {
-		// interactive data here
-		console.log(emissions_data);
-		// for (let key in countydata)  {
-		// 	//console.log(countydata[key])
-		// 	console.log(key)
-		// }
-	}
-
 	let arc_data = pieAngleGenerator(emissions_data);
 
 	$: {
 		arc_data = pieAngleGenerator(emissions_data);
-		console.log(JSON.stringify(arc_data));
 	}
 
-
-	const arc_color= d3
+	const arc_color = d3
 		.scaleOrdinal()
 		.range(d3.schemeSet1)
-		.domain([0,1,2,3,4,5,6,7]);
-
+		.domain([0, 1, 2, 3, 4, 5, 6, 7]);
 
 	let hovered = -1;
 
@@ -42,10 +30,6 @@
 		y: 0,
 	};
 </script>
-
-<!-- {#each emissions_county_data as d} 
-	{console.log(d.FIPS)}
-{/each} -->
 
 <div class="visualization">
 	<svg width="200" height="200">
@@ -58,7 +42,9 @@
 						startAngle: data.startAngle,
 						endAngle: data.endAngle,
 					})}
-					fill={index === hovered ? "black" : arc_color(data.data.industry)}
+					fill={index === hovered
+						? "black"
+						: arc_color(data.data.industry)}
 					on:mouseover={(event) => {
 						hovered = index;
 						recorded_mouse_position = {
@@ -76,8 +62,8 @@
 
 	<div
 		class={hovered === -1 ? "tooltip-hidden" : "tooltip-visible"}
-		style="left: {recorded_mouse_position.x - 270 
-			}px; top: {recorded_mouse_position.y - 100}px"
+		style="left: {recorded_mouse_position.x -
+			270}px; top: {recorded_mouse_position.y - 100}px"
 	>
 		{#if hovered !== -1}
 			<!-- You're hovering! -->
@@ -116,4 +102,3 @@
 		padding: 10px;
 	}
 </style>
-

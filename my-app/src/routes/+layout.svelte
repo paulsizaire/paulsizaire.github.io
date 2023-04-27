@@ -2,10 +2,10 @@
     import { Modals, closeModal } from "svelte-modals";
 </script>
 
-<nav style="height:50px">
+<nav class="navbar">
     <ul>
-        <li><a href="/">Map</a></li>
-        <li><a href="/sectors">Sectors</a></li>
+        <li><a class="nav-link" href="/">Map</a></li>
+        <li><a class="nav-link" href="/sectors">Sectors</a></li>
     </ul>
 </nav>
 
@@ -16,34 +16,34 @@
 </Modals>
 
 <style>
+    .navbar {
+        height: 50px;
+        background-color: lightblue;
+    }
+
     ul {
         list-style-type: none;
         margin: 0;
         padding: 0;
         overflow: hidden;
-        border: 1px solid #e7e7e7;
-        background-color: #f3f3f3;
     }
 
     li {
         float: left;
     }
 
-    li a {
+    .nav-link {
         display: block;
-        color: #666;
+        color: white;
         text-align: center;
         padding: 14px 16px;
         text-decoration: none;
+        font-weight: bold;
     }
 
-    /* Change the link color to #111 (black) on hover */
-    li a:hover {
-        background-color: #111;
-    }
-
-    .active {
-        background-color: #04aa6d;
+    .nav-link:hover,
+    .nav-link.active {
+        text-decoration: underline;
     }
 
     .backdrop {
