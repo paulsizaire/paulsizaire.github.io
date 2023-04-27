@@ -106,6 +106,7 @@
     }
 
     const stateFeature = statemap.get(selectedState);
+    resetIsolation();
     zoomToFeature(stateFeature);
   }
 
@@ -118,6 +119,7 @@
 
     if (selectedCounty === "") {
       resetZoom();
+      resetIsolation();
       return;
     }
 
@@ -129,7 +131,8 @@
       FIPScode = "";
     }
 
-    zoomToFeature(countyFeature);
+    resetIsolation();
+    isolateFeature(countyFeature);
   }
 
   function zoomToFeature(feature) {
@@ -151,6 +154,22 @@
           .scale(scale)
           .translate(-centerX, -centerY)
       );
+  }
+
+  // isolate counties/states by reducing opacity of non-selected counties/states
+  function isolateFeature(feature) {
+    chart.g
+      .selectAll("path")
+      .filter(function (d) {
+        return d !== feature;
+      })
+      .attr("fill-opacity", 0.3);
+  }
+
+  function resetIsolation() {
+    chart.g
+      .selectAll("path")
+      .attr("fill-opacity", 1);
   }
 
   function resetZoom() {
@@ -322,28 +341,10 @@
     );
 
     function handleCountyClick(event, d) {
-      // Calculate the bounding box of the clicked county
-      const bounds = path.bounds(d);
-      const [[x0, y0], [x1, y1]] = bounds;
+      // Zoom to county
+      zoomToFeature(d);
 
-      // Calculate the center point of the bounding box
-      const centerX = (x0 + x1) / 2;
-      const centerY = (y0 + y1) / 2;
-
-      // Calculate the scale needed to zoom in
-      const scale = 0.7 / Math.max((x1 - x0) / width, (y1 - y0) / height);
-
-      // Apply the zoom transformation
-      svg
-        .transition()
-        .duration(750)
-        .call(
-          zoom.transform,
-          d3.zoomIdentity
-            .translate(width / 2, (height - 200) / 2)
-            .scale(scale)
-            .translate(-centerX, -centerY)
-        );
+      isolateFeature(d);
 
       // Set the selectedState and selectedCounty
       const stateFIPS = d.id.slice(0, 2);
