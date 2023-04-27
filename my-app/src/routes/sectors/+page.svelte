@@ -39,7 +39,7 @@
       "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/paul/my-app/static/unemployment-x.csv";
     unemployment = (await d3.csv(requestURL)).map((d) => ({
       ...d,
-      rate: +d.rate,
+      ECF_log10: +d.ECF_log10,
     }));
 
     const requestURLUS =
@@ -47,12 +47,14 @@
     us = await d3.json(requestURLUS);
 
     const requestURLECF =
-      "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/paul/my-app/static/map_gdf.json";
+      "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/kailingraham/my-app/static/map_gdf.json";
     d3.json(requestURLECF).then((data) => {
       processedData = data.features.map((feature) => {
         return {
           id: feature.properties.FIPS,
-          rate: Math.round(feature.properties.ECF_log10 * 100) / 100,
+          ECF: Math.round(feature.properties.ECF * 100) / 100,
+          ECF_log10: Math.round(feature.properties.ECF_log10 * 100) / 100,
+          ECF_log10_std: feature.properties.ECF_log10_std,
           migrant_pop: Math.round(feature.properties.MIG_PERCENT * 100) / 100,
         };
       });
@@ -169,9 +171,9 @@
       mg_pop = (d) => d.migrant_pop,
       title, // given a feature f and possibly a datum d, returns the hover text
       format, // optional format specifier for the title
-      scale = d3.scaleDiverging, // type of color scale
+      // scale = d3.scaleLinear, // type of color scale
       domain, // [min, max] values; input of color scale
-      range = d3.interpolateBlues, // output of color scale
+      range = d3.interpolateRgb, // output of color scale
       width = window.innerWidth, // Change this line
       height = window.innerHeight - 50, // Change this line
       projection, // a D3 projection; null for pre-projected geometry
@@ -198,10 +200,16 @@
     const If = d3.map(features.features, featureId);
 
     // Compute default domains.
-    if (domain === undefined) domain = d3.extent(V);
+    if (domain === undefined) domain = [d3.min(V), d3.mean(V), d3.max(V)];
+    // if (domain === undefined) domain = d3.extent(V);
+    console.log(domain);
 
     // Construct scales.
-    const color = scale(domain, range);
+    const color = d3
+      .scaleLinear()
+      .domain(domain)
+      .range(range)
+      .interpolate(d3.interpolateRgb);
     if (color.unknown && unknown !== undefined) color.unknown(unknown);
 
     // Compute titles.
@@ -375,28 +383,20 @@
   }
 
   $: if (processedData && statemap && counties && statemesh) {
+    // console.log(d3.min(processedData.ECF_log10));
     chart = Choropleth(
       processedData,
       {
         id: (d) => d.id,
-        value: (d) => d.rate,
+        value: (d) => d.ECF_log10,
         mg_pop: (d) => d.migrant_pop,
-        scale: d3.scaleQuantize,
-        domain: [0.25, 3.3],
-        range: [
-          "#4274ac",
-          "#7398bf",
-          "#a8bccf",
-          "#e0e0e0",
-          "#dbc2ad",
-          "#d09f78",
-          "#c37c44",
-          "#b35806",
-        ],
+        // scale: d3.scaleLinear,
+        domain: [0.253002, 0.946957, 1.303415, 1.574287, 3.306079],
+        range: ["#005194", "#70a8ca", "#e0e0e0", "#dcab77", "#a42900"],
         // title: (f, d) =>
         //     `${f.properties.name}, ${
         //         statemap.get(f.id.slice(0, 2)).properties.name
-        //     }\n${d?.rate} gCO2/employee`,
+        //     }\n${d?.ECF_log10} gCO2/employee`,
         features: counties,
         borders: statemesh,
         width: 1400,
@@ -443,6 +443,7 @@
         ? baseColor
         : d3.rgb(baseColor.r, baseColor.g, baseColor.b, 0.1);
     });
+    // console.log(migrantPercentage);
   }
 </script>
 
@@ -453,7 +454,7 @@
       <input
         type="range"
         min="0"
-        max="1"
+        max="0.5"
         step="0.01"
         bind:value={migrantThreshold}
       />
