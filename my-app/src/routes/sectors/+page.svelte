@@ -182,8 +182,8 @@
             zoomToFeature(stateFeature);
         }
         else {
-            const stateFeature = statemap.get("California");
-            zoomToFeature(stateFeature);
+            // const stateFeature = statemap.get("California");
+            // zoomToFeature(stateFeature);
         }
     }
 
