@@ -72,8 +72,8 @@
     .modal1 {
         position: absolute;
         top: 50px;
-        left: 300px;
-        width: 300px;
+        left: 800px;
+        width: 400px;
         display: flex;
         justify-content: center;
         align-items: center;

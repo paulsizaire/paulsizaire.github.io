@@ -169,7 +169,9 @@
 
     function resetStep() {
     step =0;
+    selectedCounty = ""
     resetZoom()
+    resetIsolation();
     }
 
     // selection functions
