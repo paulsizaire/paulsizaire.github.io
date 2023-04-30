@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width" />
 	<meta http-equiv="content-security-policy" content="">
 		<link href="./_app/immutable/assets/_layout.9027f52b.css" rel="stylesheet">
-		<link href="./_app/immutable/assets/_page.f65306b8.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/_page.074471fb.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/PanelApp.847e2a0b.css" rel="stylesheet">
 		<link rel="modulepreload" href="./_app/immutable/entry/start.65a94431.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/index.83fdecff.js">
@@ -18,7 +18,7 @@
 		<link rel="modulepreload" href="./_app/immutable/chunks/store.aa87c631.js">
 		<link rel="modulepreload" href="./_app/immutable/entry/_layout.js.984db11e.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/_layout.da46b06b.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/_page.svelte.d97f9b19.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/sectors-page.svelte.1ed31b8c.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/PanelApp.ff3c065d.js">
 	<link href="https://api.mapbox.com/mapbox-gl-js/v2.14.0/mapbox-gl.css" rel="stylesheet">
 	<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.0/mapbox-gl.js"></script>
@@ -32,24 +32,17 @@
 <nav class="navbar svelte-r06kph"><ul class="svelte-r06kph"><li class="svelte-r06kph"><a class="nav-link svelte-r06kph" href="/">Map</a></li>
         <li class="svelte-r06kph"><a class="nav-link svelte-r06kph" href="/sectors">Sectors</a></li></ul></nav>
 
-<div class="row svelte-13px3z6"><div class="column left svelte-13px3z6"><div class="container-side-panel svelte-13px3z6"><div class="column-side-panel svelte-13px3z6" style="background: red"><h2>View</h2>
-                <hr>
-                <p>Minimum population density: 0 per sq mi</p>
-                <input id="slider" type="range" min="0" max="500" value="0"></div>
-            <div class="container-side-panel svelte-13px3z6" style="background: blue"><h2>Filter</h2>
-                <hr>
-                <select><option value="" disabled selected>Select a state</option></select>
-                
+<div class="panel svelte-xs18s7"><div class="box svelte-xs18s7"><h4>Filter</h4>
+    <div class="box svelte-xs18s7"><input type="range" min="0" max="0.5" step="0.01" value="0">
+      <span>0%</span></div></div>
+  <div class="box svelte-xs18s7"><h4>Search</h4>
+    <div><label for="state-select">State:</label>
+      <select id="state-select"><option value="" disabled selected>Select a state</option></select></div>
+    <div><label for="county-select">County:</label>
+      <select id="county-select"><option value="" disabled selected>Select a county</option></select></div></div></div>
 
-                <p>Some text..</p></div>
-            <div class="container-side-panel svelte-13px3z6" style="background: green"><h2>Search</h2>
-                <hr>
-                <p>Some text..</p></div></div>
 
-        <div><button>Open Modal</button></div></div>
-    <div class="column right svelte-13px3z6"><div id="map" class="svelte-13px3z6"></div></div>
-    
-</div>
+<div id="chart-container" class="svelte-xs18s7"></div>
 
 
 
@@ -74,7 +67,7 @@
 						import("./_app/immutable/entry/app.dc720393.js")
 					]).then(([kit, app]) => {
 						kit.start(app, __sveltekit_1pug15n.element, {
-							node_ids: [0, 2],
+							node_ids: [0, 3],
 							data,
 							form: null,
 							error: null
