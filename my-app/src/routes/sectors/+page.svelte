@@ -108,19 +108,23 @@
 
   function handleClick() {
     if (step === 0) {
+      resetView();
       openModal(Modal, {
         title: "Migrants and the Energy Transition",
         message:
-          "Employment is the #1 reason for migration to the U.S. and energy transition disproportionately affects different industrial sectors. This map explores the geographical hot spots where mgirants are particularly vulnerable to the energy transition in order to inform policymakers on resource allocation.",
+          "Employment is the greatest motivator for migration to the U.S., and migrant workers often face challenging economic conditions upon their arrival, especially if they are undocumented. At the same time, the U.S. energy transition has begun to deeply disrupt the U.S. economy and workforce, with the move away from carbon-intensive industries placing communities that depend on them at risk of economic displacement and job losses. Policymakers are separately beginning to address both of these challenges, however to date there has been little attention paid specifically to migrants and undocumented workers in carbon-intensive communities that may be disproportionately affected by economic shocks from the energy transition. Workforce development policies need to better understand the intersection between migrant employment pathway challenges and the disruption of communities as the economy decarbonizes.",
+        message1:
+          "This tool is designed to allow users to explore this intersection. Using publically available data, we calculate the average employee carbon footprint (ECF) of every county in the U.S. as a measure of its economic vulnerability to economic shocks during the energy transition, and map these ECFs across the U.S. We supplement this data with data from the American Community Survey on the migrant populations in these counties.",
+        message2: 'Click "Next Step" to be guided through the tool.',
         step: step,
       });
     }
-
     if (step === 1) {
       openModal(Modal, {
-        title: "Let's visit the county of Gaines, Texas",
+        title:
+          "Many counties with high vulnerability have low migrant populations",
         message:
-          "Gaines, Texas has a higher vulnerability to climate policies and a high migrant population. Feel free to explore other socio-economic and demographic data in the county.",
+          "Appalachia is known for its coal mining industry and has been one of the regions hardest hit by the U.S. transition away from coal. Here, we see that Wetzel County in West Virginia has an ECF over 20 times the national average. However, less than 1% of the county are migrants, a trend shared by much of Appalachia. Feel free to explore adjacent counties by clicking on them or selecting them from the dropdown on the left-hand side of the screen.",
         step: step,
       });
 
@@ -129,37 +133,37 @@
 
     if (step === 2) {
       openModal(Modal, {
-        title: "Compare Gaines, Texas to Kings, New York",
+        title:
+          "Urban centers with large migrant populations tend to have low energy transition vulnerabilities",
         message:
-          "Kings, New York has a lower vulnerability to climate policies despite their higher migrant population",
+          "Brooklyn in New York City (Kings County) has a very large migrant population, and the majority of employment in the borough is in non-industrial sectors. These communities are unlikely to suffer direct job losses due to decarbonization (although may face other employment and workforce development challenges).",
         step: step,
       });
 
       handleCountySelection_modal();
     }
-
     if (step === 3) {
       openModal(Modal, {
-        title: "Finally, let's visit Pennington, Minnesota",
+        title:
+          "Some areas with high migrant populations are also highly vulnerable",
         message:
-          "Pennington, Minnesota has a lower vulnerability to climate policies and a low migrant population.",
+          "West Texas counties such as Gaines County have both large migrant populations and signficiant employment vulnerability to the energy transition due to the significant presence of the oil and gas industry in the region. These communities will face unique challenges as the country decarbonizes in managing the specific vulnerabilities to economic displacement migrants in the region may face.",
         step: step,
       });
 
       handleCountySelection_modal();
     }
     if (step === 4) {
-      resetZoom();
-      resetIsolation();
+      resetView();
       openModal(Modal, {
-        title: "Play with the tool yourself!",
+        title: "Explore using the side panel",
         message:
-          "Use the side panel to search for your county and state and adjust the percentage of migrants in a county to visually identify where migrants are located and if that overlaps with higher vulnerability to climate policies and explore demographic data in each county",
+          "Use the side panel to search for a particular county and state, and filter counties by their migrant population share.",
         step: step,
       });
     }
     if (step === 5) {
-      resetZoom();
+      resetView();
     }
 
     step += 1;
@@ -182,7 +186,10 @@
 
     const stateFeature = statemap.get(selectedState);
     resetIsolation();
+    console.log(stateFeature.id);
     zoomToFeature(stateFeature);
+    // const stateFIPS = d.id.slice(0, 2);
+    isolateFeature(stateFeature);
   }
 
   function handleCountySelection(event) {
@@ -240,8 +247,8 @@
       if (step === 1) {
         console.log("zoom to county");
 
-        selectedCounty = "Gaines";
-        selectedState = "Texas";
+        selectedCounty = "Wetzel";
+        selectedState = "West Virginia";
 
         const countyData = usnames.find(
           (row) =>
@@ -261,7 +268,6 @@
           FIPScode = "";
         }
       }
-
       if (step === 2) {
         console.log("zoom to county");
 
@@ -290,8 +296,8 @@
       if (step === 3) {
         console.log("zoom to county");
 
-        selectedCounty = "Pennington";
-        selectedState = "Minnesota";
+        selectedCounty = "Gaines";
+        selectedState = "Texas";
 
         const countyData = usnames.find(
           (row) =>
@@ -337,12 +343,23 @@
 
   // isolate counties/states by reducing opacity of non-selected counties/states
   function isolateFeature(feature) {
-    chart.g
-      .selectAll("path")
-      .filter(function (d) {
-        return d !== feature;
-      })
-      .attr("fill-opacity", 0.3);
+    if (feature.id.length === 2) {
+      console.log("StateFIPS passed");
+      console.log(chart.g.selectAll("path"));
+      chart.g
+        .selectAll("path")
+        .filter(function (d) {
+          return d.id.slice(0, 2) !== feature.id;
+        })
+        .attr("fill-opacity", 0.3);
+    } else {
+      chart.g
+        .selectAll("path")
+        .filter(function (d) {
+          return d !== feature;
+        })
+        .attr("fill-opacity", 0.3);
+    }
   }
 
   function resetIsolation() {
@@ -634,7 +651,7 @@
 
 <div class="panel">
   <div class="box">
-    <h4>Filter</h4>
+    <h4>Migrant population share cutoff</h4>
     <div class="box">
       <input
         type="range"

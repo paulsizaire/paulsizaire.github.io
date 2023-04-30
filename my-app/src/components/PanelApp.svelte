@@ -86,9 +86,9 @@
     countyData = panel_data.filter((d) => d.FIPS === FIPScode);
   }
 
-  function hideBox() {
-    showPanel = false;
-  }
+//   function hideBox() {
+//     showPanel = false;
+//   }
 </script>
 
 {#if showPanel}
@@ -126,7 +126,7 @@
         </div>
       </div>
     </div>
-    <button on:click={hideBox}>Hide Box</button>
+    <!-- <button on:click={hideBox}>Hide Box</button> -->
   </Box>
 {/if}
 

@@ -6,6 +6,8 @@
 
     export let title;
     export let message;
+    export let message1;
+    export let message2;
     export let step;
 
     console.log(step);
@@ -18,6 +20,8 @@
             <div class="contents">
                 <h2>{title}</h2>
                 <p>{message}</p>
+                <p>{message1}</p>
+                <p>{message2}</p>
                 <div class="actions">
                     <button on:click={closeModal}>OK</button>
                 </div>
@@ -75,8 +79,8 @@
         left: 800px;
         width: 400px;
         display: flex;
-        justify-content: center;
-        align-items: center;
+        justify-content: left;
+        align-items: left;
 
         /* allow click-through to backdrop */
         pointer-events: none;
@@ -112,7 +116,7 @@
     }
 
     p {
-        text-align: center;
+        text-align: justify;
         margin-top: 16px;
     }
 
