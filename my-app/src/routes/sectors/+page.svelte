@@ -101,80 +101,76 @@
   // modal functions
   let step = 0;
 
-    import { openModal } from "svelte-modals";
-    import Modal from "./Modal.svelte";
+  import { openModal } from "svelte-modals";
+  import Modal from "./Modal.svelte";
 
-    function handleClick() {
-        if (step === 0 ) {
-
-            openModal(Modal, {
-                title: "Migrants and the Energy Transition",
-                message: "Employment is the #1 reason for migration to the U.S. and energy transition disproportionately affects different industrial sectors. This map explores the geographical hot spots where mgirants are particularly vulnerable to the energy transition in order to inform policymakers on resource allocation.",
-                step: step,
-            });
-
-        }
-
-        if (step === 1) {
-
-            openModal(Modal, {
-                title: "Let's visit the county of Gaines, Texas",
-                message: "Gaines, Texas has a higher vulnerability to climate policies and a high migrant population. Feel free to explore other socio-economic and demographic data in the county.",
-                step: step,
-            });
-
-            handleCountySelection_modal();
-
-        }
-
-        if (step === 2) {
-
-            openModal(Modal, {
-                title: "Compare Gaines, Texas to Kings, New York",
-                message: "Kings, New York has a lower vulnerability to climate policies despite their higher migrant population",
-                step: step,
-            });
-
-            handleCountySelection_modal();
-
-        }
-
-        if (step === 3) {
-
-            openModal(Modal, {
-                title: "Finally, let's visit Pennington, Minnesota",
-                message: "Pennington, Minnesota has a lower vulnerability to climate policies and a low migrant population.",
-                step: step,
-            });
-
-            handleCountySelection_modal();
-
-            }
-        if (step === 4) {
-            resetZoom()
-
-            openModal(Modal, {
-                title: "Play with the tool yourself!",
-                message: "Use the side panel to search for your county and state and adjust the percentage of migrants in a county to visually identify where migrants are located and if that overlaps with higher vulnerability to climate policies and explore demographic data in each county",
-                step: step,
-            });
-
-
-        if (step === 5) {
-            resetZoom()
-             }
-        }
-        step +=1;
-}
-
-    function resetStep() {
-    step =0;
-    selectedCounty = ""
-    resetZoom()
-    resetIsolation();
+  function handleClick() {
+    if (step === 0) {
+      openModal(Modal, {
+        title: "Migrants and the Energy Transition",
+        message:
+          "Employment is the #1 reason for migration to the U.S. and energy transition disproportionately affects different industrial sectors. This map explores the geographical hot spots where mgirants are particularly vulnerable to the energy transition in order to inform policymakers on resource allocation.",
+        step: step,
+      });
     }
 
-    // selection functions
+    if (step === 1) {
+      openModal(Modal, {
+        title: "Let's visit the county of Gaines, Texas",
+        message:
+          "Gaines, Texas has a higher vulnerability to climate policies and a high migrant population. Feel free to explore other socio-economic and demographic data in the county.",
+        step: step,
+      });
+
+      handleCountySelection_modal();
+    }
+
+    if (step === 2) {
+      openModal(Modal, {
+        title: "Compare Gaines, Texas to Kings, New York",
+        message:
+          "Kings, New York has a lower vulnerability to climate policies despite their higher migrant population",
+        step: step,
+      });
+
+      handleCountySelection_modal();
+    }
+
+    if (step === 3) {
+      openModal(Modal, {
+        title: "Finally, let's visit Pennington, Minnesota",
+        message:
+          "Pennington, Minnesota has a lower vulnerability to climate policies and a low migrant population.",
+        step: step,
+      });
+
+      handleCountySelection_modal();
+    }
+    if (step === 4) {
+      resetZoom();
+      resetIsolation();
+      openModal(Modal, {
+        title: "Play with the tool yourself!",
+        message:
+          "Use the side panel to search for your county and state and adjust the percentage of migrants in a county to visually identify where migrants are located and if that overlaps with higher vulnerability to climate policies and explore demographic data in each county",
+        step: step,
+      });
+    }
+    if (step === 5) {
+      resetZoom();
+    }
+
+    step += 1;
+  }
+
+  function resetStep() {
+    step = 0;
+    selectedCounty = "";
+    resetZoom();
+    resetIsolation();
+  }
+
+  // selection functions
   function handleStateSelection(event) {
     selectedState = event.target.value;
     if (selectedState === "") {
@@ -213,105 +209,98 @@
   }
 
   function handleCountySelection_modal(event) {
-        if (event) {
-            selectedCounty = event.target.value;
-            console.log(selectedCounty)
+    if (event) {
+      selectedCounty = event.target.value;
+      console.log(selectedCounty);
 
-            const countyData = usnames.find(
-                (row) =>
-                    row.county === selectedCounty &&
-                    row.state_name === selectedState
-            );
+      const countyData = usnames.find(
+        (row) =>
+          row.county === selectedCounty && row.state_name === selectedState
+      );
 
-            if (selectedCounty === "") {
-                resetZoom();
-                resetIsolation();
-                return;
-            }
+      if (selectedCounty === "") {
+        resetZoom();
+        resetIsolation();
+        return;
+      }
 
-            const countyFeature = counties_fips.get(countyData.county_fips);
+      const countyFeature = counties_fips.get(countyData.county_fips);
 
-            if (countyFeature) {
-            FIPScode = countyData.county_fips;
-              } else {
-              FIPScode = "";
-                }
-            resetIsolation();
-            isolateFeature(countyFeature);
+      if (countyFeature) {
+        FIPScode = countyData.county_fips;
+      } else {
+        FIPScode = "";
+      }
+      resetIsolation();
+      isolateFeature(countyFeature);
+    } else {
+      if (step === 1) {
+        console.log("zoom to county");
 
+        selectedCounty = "Gaines";
+        selectedState = "Texas";
 
+        const countyData = usnames.find(
+          (row) =>
+            row.county === selectedCounty && row.state_name === selectedState
+        );
+
+        const countyFeature = counties_fips.get(countyData.county_fips);
+        zoomToFeature(countyFeature);
+        if (countyFeature) {
+          FIPScode = countyData.county_fips;
+        } else {
+          FIPScode = "";
         }
-        else {
-            if (step === 1) {
-                console.log('zoom to county')
+        resetIsolation();
+        isolateFeature(countyFeature);
+      }
 
-                selectedCounty = "Gaines";
-                selectedState = "Texas";
+      if (step === 2) {
+        console.log("zoom to county");
 
-                const countyData = usnames.find(
-                    (row) =>
-                        row.county === selectedCounty &&
-                        row.state_name === selectedState
-                        );
+        selectedCounty = "Kings";
+        selectedState = "New York";
 
-                const countyFeature = counties_fips.get(countyData.county_fips);
-                zoomToFeature(countyFeature);
-                if (countyFeature) {
-                  FIPScode = countyData.county_fips;
-                    } else {
-                    FIPScode = "";
-                    }
-                  resetIsolation();
-                  isolateFeature(countyFeature);
-                    }
+        const countyData = usnames.find(
+          (row) =>
+            row.county === selectedCounty && row.state_name === selectedState
+        );
 
-            if (step === 2) {
-                console.log('zoom to county')
-
-                selectedCounty = "Kings";
-                selectedState = "New York";
-
-                const countyData = usnames.find(
-                    (row) =>
-                        row.county === selectedCounty &&
-                        row.state_name === selectedState
-                        );
-
-                const countyFeature = counties_fips.get(countyData.county_fips);
-                zoomToFeature(countyFeature);
-                if (countyFeature) {
-                    FIPScode = countyData.county_fips;
-                    } else {
-                    FIPScode = "";
-                    }
-                  resetIsolation();
-                  isolateFeature(countyFeature);
-                  }
-
-            if (step === 3) {
-                console.log('zoom to county')
-
-                selectedCounty = "Pennington";
-                selectedState = "Minnesota";
-
-                const countyData = usnames.find(
-                    (row) =>
-                        row.county === selectedCounty &&
-                        row.state_name === selectedState
-                        );
-
-                const countyFeature = counties_fips.get(countyData.county_fips);
-                zoomToFeature(countyFeature);
-                if (countyFeature) {
-                FIPScode = countyData.county_fips;
-                  } else {
-                  FIPScode = "";
-                    }
-                resetIsolation();
-                isolateFeature(countyFeature);
-                }
+        const countyFeature = counties_fips.get(countyData.county_fips);
+        zoomToFeature(countyFeature);
+        if (countyFeature) {
+          FIPScode = countyData.county_fips;
+        } else {
+          FIPScode = "";
         }
+        resetIsolation();
+        isolateFeature(countyFeature);
+      }
+
+      if (step === 3) {
+        console.log("zoom to county");
+
+        selectedCounty = "Pennington";
+        selectedState = "Minnesota";
+
+        const countyData = usnames.find(
+          (row) =>
+            row.county === selectedCounty && row.state_name === selectedState
+        );
+
+        const countyFeature = counties_fips.get(countyData.county_fips);
+        zoomToFeature(countyFeature);
+        if (countyFeature) {
+          FIPScode = countyData.county_fips;
+        } else {
+          FIPScode = "";
+        }
+        resetIsolation();
+        isolateFeature(countyFeature);
+      }
     }
+  }
 
   function zoomToFeature(feature) {
     const bounds = path.bounds(feature);
@@ -345,9 +334,7 @@
   }
 
   function resetIsolation() {
-    chart.g
-      .selectAll("path")
-      .attr("fill-opacity", 1);
+    chart.g.selectAll("path").attr("fill-opacity", 1);
   }
 
   function resetZoom() {
@@ -677,27 +664,22 @@
     <!-- <h2>Welcome to the Tutorial!</h2>
     <p>Step 1 content goes here...</p> -->
     <button on:click={handleClick}>Start</button>
-
   {:else if step === 1}
     <!-- <h2>Step 2: county!</h2>
     <p>zoom to county.</p> -->
     <button on:click={handleClick}>Next Step</button>
-    
   {:else if step === 2}
     <!-- <h2>Step 3: Play with filter</h2>
     <p>Play w/ filter</p> -->
     <button on:click={handleClick}>Next Step</button>
-
   {:else if step === 3}
     <!-- <h2>Step 4: Play with filter</h2>
     <p>Play w/ filter</p> -->
     <button on:click={handleClick}>Next Step</button>
-
   {:else if step === 4}
     <!-- <h2>Step 4: Play with filter</h2>
     <p>Play w/ filter</p> -->
     <button on:click={handleClick}>Next Step</button>
-
   {:else if step === 5}
     <!-- <h2>Step 4: Play with filter</h2>
     <p>Play w/ filter</p> -->
@@ -735,8 +717,8 @@
   }
 
   .tutorial {
-  position: absolute;
-  bottom: 20px;
-  right: 50px;
+    position: absolute;
+    bottom: 20px;
+    right: 50px;
   }
 </style>
