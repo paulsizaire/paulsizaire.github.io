@@ -1,6 +1,7 @@
 <script>
   import * as d3 from "d3";
   import { onMount } from "svelte";
+  import { writable } from "svelte/store";
   import PanelApp from "../../components/PanelApp.svelte";
 
   let unemployment = [];
@@ -24,6 +25,7 @@
   let migrantThreshold = 0;
   let color;
   let FIPScode;
+  let showPanel = false;
 
   let path;
   let width;
@@ -206,6 +208,7 @@
 
     resetIsolation();
     isolateFeature(countyFeature);
+    showPanel = true;
   }
 
   function handleCountySelection_modal(event) {
@@ -246,14 +249,17 @@
         );
 
         const countyFeature = counties_fips.get(countyData.county_fips);
-        zoomToFeature(countyFeature);
+        const stateFeature = statemap.get(selectedState);
+        zoomToFeature(stateFeature);
+        resetIsolation();
+        isolateFeature(countyFeature);
+        showPanel = true;
+
         if (countyFeature) {
           FIPScode = countyData.county_fips;
         } else {
           FIPScode = "";
         }
-        resetIsolation();
-        isolateFeature(countyFeature);
       }
 
       if (step === 2) {
@@ -268,14 +274,17 @@
         );
 
         const countyFeature = counties_fips.get(countyData.county_fips);
-        zoomToFeature(countyFeature);
+        const stateFeature = statemap.get(selectedState);
+        zoomToFeature(stateFeature);
+        resetIsolation();
+        isolateFeature(countyFeature);
+        showPanel = true;
+
         if (countyFeature) {
           FIPScode = countyData.county_fips;
         } else {
           FIPScode = "";
         }
-        resetIsolation();
-        isolateFeature(countyFeature);
       }
 
       if (step === 3) {
@@ -290,14 +299,17 @@
         );
 
         const countyFeature = counties_fips.get(countyData.county_fips);
-        zoomToFeature(countyFeature);
+        const stateFeature = statemap.get(selectedState);
+        zoomToFeature(stateFeature);
+        resetIsolation();
+        isolateFeature(countyFeature);
+        showPanel = true;
+
         if (countyFeature) {
           FIPScode = countyData.county_fips;
         } else {
           FIPScode = "";
         }
-        resetIsolation();
-        isolateFeature(countyFeature);
       }
     }
   }
@@ -306,10 +318,10 @@
     const bounds = path.bounds(feature);
     const [[x0, y0], [x1, y1]] = bounds;
 
-    const centerX = (x0 + x1) / 2;
+    const centerX = x0 + 0.15 * (x1 - x0);
     const centerY = (y0 + y1) / 2;
 
-    const scale = 0.7 / Math.max((x1 - x0) / width, (y1 - y0) / height);
+    const scale = 0.7 / Math.max((1.5 * (x1 - x0)) / width, (y1 - y0) / height);
 
     svg
       .transition()
@@ -340,7 +352,7 @@
   function resetZoom() {
     svg
       .transition()
-      .duration(750)
+      .duration(500)
       .call(
         zoom.transform,
         d3.zoomIdentity.translate(offsetX, offsetY).scale(initialScale)
@@ -506,7 +518,6 @@
     );
 
     function handleCountyClick(event, d) {
-    
       // Set the selectedState and selectedCounty
       const stateFIPS = d.id.slice(0, 2);
       const selectedStateInfo = states.features.find((d) => d.id === stateFIPS);
@@ -612,6 +623,13 @@
     });
     // console.log(migrantPercentage);
   }
+
+  // add function that closes the box and resets the zoom and county selection
+  function resetView() {
+    showPanel = false;
+    resetZoom();
+    resetIsolation();
+  }
 </script>
 
 <div class="panel">
@@ -654,9 +672,12 @@
     </div>
   </div>
 </div>
-{#if selectedCounty}
-  <PanelApp {FIPScode} />
-{/if}
+<PanelApp {FIPScode} {showPanel} />
+<button
+  on:click={resetView}
+  style="position: absolute; top: 310px; left: 10px; z-index: 999;"
+  >Reset view</button
+>
 
 <div id="chart-container" />
 
@@ -664,7 +685,7 @@
   {#if step === 0}
     <!-- <h2>Welcome to the Tutorial!</h2>
     <p>Step 1 content goes here...</p> -->
-    <button on:click={handleClick}>Start</button>
+    <button on:click={handleClick}>Start tutorial</button>
   {:else if step === 1}
     <!-- <h2>Step 2: county!</h2>
     <p>zoom to county.</p> -->
