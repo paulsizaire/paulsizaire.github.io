@@ -506,16 +506,17 @@
     );
 
     function handleCountyClick(event, d) {
-      // Zoom to county
-      zoomToFeature(d);
-
-      isolateFeature(d);
-
+    
       // Set the selectedState and selectedCounty
       const stateFIPS = d.id.slice(0, 2);
       const selectedStateInfo = states.features.find((d) => d.id === stateFIPS);
       selectedState = selectedStateInfo.properties.name;
+      const stateFeature = statemap.get(selectedState);
       selectedCounty = d.properties.name;
+
+      // Isolate county
+      zoomToFeature(stateFeature);
+      isolateFeature(d);
 
       // Update the dropdowns with the selected state and county
       document.getElementById("state-select").value = selectedState;
