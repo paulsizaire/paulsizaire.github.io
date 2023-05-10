@@ -93,11 +93,11 @@
 	.tooltip-visible {
 		font: 15px sans-serif;
 		visibility: visible;
-		background-color: #f0dba8;
+		background-color: #86847f;
 		border-radius: 10px;
 		width: 100px;
 		color: black;
-		position: absolute;
+		position: relative;
 		padding: 10px;
 	}
 </style>

@@ -107,13 +107,14 @@
 		visibility: hidden;
 		width: 200px;
 		position: absolute;
+		
 	}
 
 	.tooltip-visible {
 		font: 15px;
 
 		visibility: visible;
-		background-color: #f0dba8;
+		background-color: #86847f;
 		border-radius: 10px;
 		width: 100px;
 		color: black;

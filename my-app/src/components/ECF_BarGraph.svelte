@@ -81,7 +81,7 @@
   <div
     class={hovered === -1 ? "tooltip-hidden" : "tooltip-visible"}
     style="left: {recorded_mouse_position.x - 90
-    }px; top: {recorded_mouse_position.y - 350}px"
+    }px; bottom: {recorded_mouse_position.y - 500}px"
   >
     {#if hovered !== -1}
       {ecf_data[hovered].ECF}
@@ -102,21 +102,18 @@
   /* dynamic classes for the tooltip */
   .tooltip-hidden {
     visibility: hidden;
-    font-family: "Nunito", sans-serif;
-    width: 20px;
-    position: absolute;
+    width: 10px;
+    position: relative;
   }
 
   .tooltip-visible {
-    font: 15px sans-serif;
-    font-family: "Nunito", sans-serif;
+    font: 14px ;
     visibility: visible;
     background-color: #dbdad6;
-    border-radius: 10px;
-    width: 20px;
+    border-radius: 5px;
+    width: 10px;
     color: black;
-    position: absolute;
-    padding: 10px;
+    position: relative;
     text-align: center;
   }
 
