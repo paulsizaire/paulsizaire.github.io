@@ -20,7 +20,7 @@
 
 	const arc_color = d3
 		.scaleOrdinal()
-		.range(d3.schemeSet1)
+		.range(d3.schemePastel2)
 		.domain([0, 1, 2, 3, 4, 5, 6, 7]);
 
 	let hovered = -1;
@@ -94,9 +94,12 @@
 	.visualization {
 		width: 200px;
 		margin: 0px;
-		margin-top: 0px;
+		margin-top: -20px;
+		margin-right:250px;
 		text-align: middle;
 		height: 10px;
+		/* position: relative; */
+	/* padding-bottom: 50%; */
 	}
 
 	/* dynamic classes for the tooltip */
@@ -114,8 +117,9 @@
 		border-radius: 10px;
 		width: 100px;
 		color: black;
-		position: absolute;
+		position: relative;
 		padding: 10px;
+		fill-opacity:10%;
 	}
 
 	.legend-container {

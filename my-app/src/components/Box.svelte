@@ -9,8 +9,8 @@
 		position: absolute;
 		bottom: 0;
 		left: 1%;
-		width: 800px;
-		height: 250px;
+		width: 750px;
+		height: 300px;
 		border: 1px solid #aaa;
 		border-radius: 2px;
 		z-index: 3;

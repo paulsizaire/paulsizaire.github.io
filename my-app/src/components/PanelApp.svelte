@@ -22,8 +22,11 @@
   let ecfFile =
       "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/socioeconomic-panel/ACS/ecf.csv";
 
-  //set stats you want to show
+  //port variables
   export let FIPScode;
+  export let showPanel = false;
+
+  //set stats you want to show
   let countyData = [];
   let emissions_data = [];
   let panel_data = [];
@@ -85,56 +88,58 @@
   }
 </script>
 
-<Box>
-  <div class="row">
-      <div class="col-md-1">
-          {#each countyData as d}
-              <!-- add more county level stats here if you want to -->
-              <h1>{d.county}, {d.state}</h1>
-              
-          {/each}
-      </div>
-      <div class="col-md-3">
-          {#each countyData as d}
-              <!-- add more county level stats here if you want to -->
-              <p>There are {Math.round(d.population)} people in this county, of which {Math.round(d.mig_pop)} are migrants {(Math.round(d.mig_pop*100/d.population))}, mostly from X,Y,X. The county median annual income is ${Math.round(d.income)} </p>
-              
-          {/each}
-      </div>
-      
-  </div>
-  <div class = "row">
-      <div class="col-md-2">
-          <h2>ECF Comparison</h2>
-      </div>
-      <div class="col-md-2">
-          <h2>Industry Breakdown</h2>
-      </div>
+{#if showPanel}
+  <Box>
+    <div class="row">
+        <div class="col-md-1">
+            {#each countyData as d}
+                <!-- add more county level stats here if you want to -->
+                <h1>{d.county}, {d.state}</h1>
+                
+            {/each}
+        </div>
+        <div class="col-md-3">
+            {#each countyData as d}
+                <!-- add more county level stats here if you want to -->
+                <p>There are {Math.round(d.population)} people in this county, of which {Math.round(d.mig_pop)} are migrants ({(Math.round(d.mig_pop*100/d.population))}%), mostly from X,Y,X. The county median annual income is ${Math.round(d.income)} </p>
+                
+            {/each}
+        </div>
+        
+    </div>
+    <div class = "row">
+        <div class="col-md-2">
+            <h2>ECF Comparison</h2>
+        </div>
+        <div class="col-md-2">
+            <h2>Industry Breakdown</h2>
+        </div>
 
-  </div>
-  <div class="row">
-      <div class="col-md-1">
-          <div class="graph">
-              <ECF_BarGraph bind:ecf_data />
-          </div>
-      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+            <div class="graph">
+                <ECF_BarGraph bind:ecf_data />
+            </div>
+        </div>
 
-      <div class="col-md-1">
-          <div class="graph">
-              {#await fetchEmissionsData() then}
-                  <EmissionsGraph bind:emissions_data />
-              {/await}
-          </div>
-      </div>
+        <div class="col-md-1">
+            <div class="graph">
+                {#await fetchEmissionsData() then}
+                    <EmissionsGraph bind:emissions_data />
+                {/await}
+            </div>
+        </div>
 
-      <div class="col-md-2">
-          <div class="graph">
-              <EmploymentGraph bind:employment_data />
-          </div>
-      </div>
+        <div class="col-md-2">
+            <div class="graph">
+                <EmploymentGraph bind:employment_data />
+            </div>
+        </div>
 
-  </div>
-</Box>
+    </div>
+  </Box>
+{/if}
 
 <style>
   .row {
@@ -143,20 +148,25 @@
      
   }
   .col-md-4 {
-      flex: 50%;
+      flex: 10%;
+      padding: 1%;
   }
   .col-md-2 {
-      flex: 50%;
+      flex: 10%;
+      padding: 1%;
   }
 
   .col-md-6 {
       flex: 10%;
+      padding: 1%;
   }
   .col-md-3 {
       flex: 70%;
+      padding: 1%;
   }
   .col-md-1 {
       flex: 10%;
+      padding: 1%;
   }
 
 

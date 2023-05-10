@@ -20,7 +20,7 @@
 
 	const arc_color = d3
 		.scaleOrdinal()
-		.range(d3.schemeSet1)
+		.range(d3.schemePastel2)
 		.domain([0, 1, 2, 3, 4, 5, 6, 7]);
 
 	let hovered = -1;
@@ -76,17 +76,18 @@
 <style>
 	.visualization {
 		width: 200px;
-		margin: 10px;
-		margin-top: 1px;
+		margin: 0px;
+		margin-top: -20px;
 		text-align: middle;
 		height: 10px;
+		/* position: relative; */
 	}
 
 	/* dynamic classes for the tooltip */
 	.tooltip-hidden {
 		visibility: hidden;
 		width: 200px;
-		position: flex; /* absolute */
+		position: relative; /* absolute */
 	}
 
 	.tooltip-visible {
