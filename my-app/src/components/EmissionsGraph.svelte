@@ -32,8 +32,9 @@
 </script>
 
 <div class="visualization">
+	<h3> By Emissions </h3>
 	<svg width="200" height="200">
-		<g transform="translate(100, 100)">
+		<g transform="translate(50, 50)">
 			<!-- Place for Pie -->
 			<!-- {arc_data} -->
 			{#each arc_data as data, index}
@@ -74,25 +75,22 @@
 
 <style>
 	.visualization {
-		font: 10px sans-serif;
 		width: 200px;
-		margin: auto;
+		margin: 10px;
 		margin-top: 1px;
 		text-align: middle;
-		height: 90px;
+		height: 10px;
 	}
 
 	/* dynamic classes for the tooltip */
 	.tooltip-hidden {
 		visibility: hidden;
-		font-family: "Nunito", sans-serif;
 		width: 200px;
 		position: flex; /* absolute */
 	}
 
 	.tooltip-visible {
 		font: 15px sans-serif;
-		font-family: "Nunito", sans-serif;
 		visibility: visible;
 		background-color: #f0dba8;
 		border-radius: 10px;

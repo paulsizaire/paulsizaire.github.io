@@ -91,9 +91,10 @@
 <style>
   .visualization {
     font: 7px sans-serif;
-    margin: auto;
+    margin: 1px;
     margin-top: 0.5px;
     text-align: middle;
+    /* position:absolute; */
   }
 
   /* dynamic classes for the tooltip */
@@ -119,4 +120,5 @@
   .xticks {
     transform: rotate(-90deg);
   }
+ 
 </style>

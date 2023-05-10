@@ -1,5 +1,6 @@
 <div class="box">
 	<slot />
+	
 </div>
 
 
@@ -7,9 +8,9 @@
 	.box {
 		position: absolute;
 		bottom: 0;
-		left: 2%;
-		width: 400;
-		height: 400px;
+		left: 1%;
+		width: 800px;
+		height: 250px;
 		border: 1px solid #aaa;
 		border-radius: 2px;
 		z-index: 3;
@@ -19,3 +20,4 @@
 		margin: 0 0 1em 0;
 	}
 </style>
+

@@ -240,6 +240,7 @@
     <div class="column right">
         <div id="map" />
     </div>
+    {console.log(selectedCounty)}
     {#if selectedCounty}
         <PanelApp {FIPScode} />
     {/if}
