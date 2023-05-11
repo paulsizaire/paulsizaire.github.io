@@ -76,11 +76,12 @@
       {/each}
     </g>
   </svg>
+  <h3> tonnes CO2 per employee</h3>
 
   <div
     class={hovered === -1 ? "tooltip-hidden" : "tooltip-visible"}
-    style="left: {recorded_mouse_position.x -
-      170}px; top: {recorded_mouse_position.y - 100}px"
+    style="left: {recorded_mouse_position.x - 90
+    }px; bottom: {recorded_mouse_position.y - 500}px"
   >
     {#if hovered !== -1}
       {ecf_data[hovered].ECF}
@@ -91,32 +92,38 @@
 <style>
   .visualization {
     font: 7px sans-serif;
-    margin: auto;
+    margin: 1px;
     margin-top: 0.5px;
+    margin-left:-40px;
     text-align: middle;
+    /* position:absolute; */
   }
 
   /* dynamic classes for the tooltip */
   .tooltip-hidden {
     visibility: hidden;
-    font-family: "Nunito", sans-serif;
-    width: 200px;
-    position: absolute;
+    width: 10px;
+    position: relative;
   }
 
   .tooltip-visible {
-    font: 15px sans-serif;
-    font-family: "Nunito", sans-serif;
+    font: 14px ;
     visibility: visible;
-    background-color: #f0dba8;
-    border-radius: 10px;
-    width: 100px;
+    background-color: #dbdad6;
+    border-radius: 5px;
+    width: 10px;
     color: black;
-    position: absolute;
-    padding: 10px;
+    position: relative;
+    text-align: center;
   }
 
   .xticks {
     transform: rotate(-90deg);
   }
+ 
+ h3 {
+  text-align: center;
+  margin-top:-5px;
+  margin-left:50px;
+ }
 </style>

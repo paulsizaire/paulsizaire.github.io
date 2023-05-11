@@ -20,7 +20,7 @@
 
 	const arc_color = d3
 		.scaleOrdinal()
-		.range(d3.schemeSet1)
+		.range(d3.schemePastel2)
 		.domain([0, 1, 2, 3, 4, 5, 6, 7]);
 
 	let hovered = -1;
@@ -30,16 +30,13 @@
 		y: 0,
 	};
 
-	const legendData = [
-		{ label: "Label 1", color: "blue" },
-		{ label: "Label 2", color: "green" },
-		{ label: "Label 3", color: "red" },
-	];
+
 </script>
 
 <div class="visualization">
+	<h3> By Employment </h3>
 	<svg width="200" height="200">
-		<g transform="translate(100, 100)">
+		<g transform="translate(50, 50)">
 			<!-- Place for Pie -->
 			<!-- {arc_data} -->
 			{#each arc_data as data, index}
@@ -76,13 +73,11 @@
 		{/if}
 	</div>
 
+
+</div>
+
 	<div class="legend-container">
-		<!-- {#each legendData as item (item.label)}
-		  <div class="legend-item">
-				<div class="legend-color" style="background-color: {item.color}"></div>
-				<span class="legend-label">{arc_color(data.data.industry)}</span>
-		  </div>
-		{/each} -->
+
 		{#each arc_data as data, index}
 			<div class="legend-item">
 				<div
@@ -94,47 +89,50 @@
 			</div>
 		{/each}
 	</div>
-</div>
 
 <style>
 	.visualization {
-		font: 10px sans-serif;
 		width: 200px;
-		margin: auto;
-		margin-top: 1px;
+		margin: 0px;
+		margin-top: -20px;
+		margin-right:250px;
 		text-align: middle;
-		height: 90px;
+		height: 10px;
+		/* position: relative; */
+	/* padding-bottom: 50%; */
 	}
 
 	/* dynamic classes for the tooltip */
 	.tooltip-hidden {
 		visibility: hidden;
-		font-family: "Nunito", sans-serif;
 		width: 200px;
 		position: absolute;
+		
 	}
 
 	.tooltip-visible {
-		font: 15px sans-serif;
-		font-family: "Nunito", sans-serif;
+		font: 15px;
+
 		visibility: visible;
-		background-color: #f0dba8;
+		background-color: #86847f;
 		border-radius: 10px;
 		width: 100px;
 		color: black;
-		position: absolute;
+		position: relative;
 		padding: 10px;
+		fill-opacity:10%;
 	}
 
 	.legend-container {
 		position: absolute;
-		top: 250px;
+		bottom: 1px;
 		right: 10px;
+		/* height:150px */
 	}
 	/* Example: Style legend elements */
 	.legend-container {
 		/* Define container styles */
-		font-size: 14px;
+		font-size: 12px;
 		color: #333;
 	}
 
