@@ -56,7 +56,7 @@
           {d.scale}
         </text>
 
-        <rect
+        <!-- <rect
           x="0"
           y={yScale(d.scale)}
           width={xScale(d.ECF)}
@@ -72,7 +72,15 @@
           on:mouseout={(event) => {
             hovered = -1;
           }}
-        />
+        /> -->
+        <rect
+        x="0"
+        y={yScale(d.scale)}
+        width={xScale(d.ECF)}
+        height={yScale.bandwidth()}
+        fill={barcolors[index].color}
+
+      />
       {/each}
     </g>
   </svg>

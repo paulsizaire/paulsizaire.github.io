@@ -40,7 +40,7 @@
 			<!-- Place for Pie -->
 			<!-- {arc_data} -->
 			{#each arc_data as data, index}
-				<path
+				<!-- <path
 					d={arcGenerator({
 						startAngle: data.startAngle,
 						endAngle: data.endAngle,
@@ -58,6 +58,14 @@
 					on:mouseout={(event) => {
 						hovered = -1;
 					}}
+				/> -->
+
+				<path
+					d={arcGenerator({
+						startAngle: data.startAngle,
+						endAngle: data.endAngle,
+					})}
+					fill={arc_color(data.data.industry)}
 				/>
 			{/each}
 		</g>

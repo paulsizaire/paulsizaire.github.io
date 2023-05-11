@@ -9,7 +9,7 @@
   //load socio-economic data
   let socioeconFile =
       //"https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/socioeconomic-panel/ACS/socioec_ECF.csv";
-      "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/panel/my-app/static/socioec_ECF.csv";
+      "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/mvp/my-app/static/socioec_ECF.csv";
 
   //load emissions data
   let emissionsFile =
