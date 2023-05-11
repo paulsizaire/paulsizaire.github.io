@@ -8,7 +8,8 @@
 
   //load socio-economic data
   let socioeconFile =
-      "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/socioeconomic-panel/ACS/socioec_ECF.csv";
+      //"https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/socioeconomic-panel/ACS/socioec_ECF.csv";
+      "https://raw.githubusercontent.com/paulsizaire/paulsizaire.github.io/panel/my-app/static/socioec_ECF.csv";
 
   //load emissions data
   let emissionsFile =
@@ -72,6 +73,9 @@
               FIPS: d.FIPS,
               poverty_rate: d.POV_RATE,
               income: d.INC_IND_TOT,
+              top_1: d.top_1,
+              top_2: d.top_2,
+              top_3: d.top_3,
           };
       });
   }
@@ -101,7 +105,7 @@
         <div class="col-md-3">
             {#each countyData as d}
                 <!-- add more county level stats here if you want to -->
-                <p>There are {Math.round(d.population)} people in this county, of which {Math.round(d.mig_pop)} are migrants ({(Math.round(d.mig_pop*100/d.population))}%), mostly from X,Y,X. The county median annual income is ${Math.round(d.income)} </p>
+                <p>There are {Math.round(d.population)} people in this county, of which {Math.round(d.mig_pop)} are migrants ({(Math.round(d.mig_pop*100/d.population))}%), mostly from {d.top_1}, {d.top_2}, and {d.top_3}. The county median annual income is ${Math.round(d.income)}. </p>
                 
             {/each}
         </div>
