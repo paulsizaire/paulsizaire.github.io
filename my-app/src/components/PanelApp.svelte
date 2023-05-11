@@ -25,7 +25,14 @@
 
   //port variables
   export let FIPScode;
-  export let showPanel = false;
+  export let showPanel;
+
+
+	function closeBox() {
+		showPanel = false;
+	}
+
+
 
   //set stats you want to show
   let countyData = [];
@@ -89,12 +96,16 @@
 
   $: {
       countyData = panel_data.filter((d) => d.FIPS === FIPScode);
+      console.log(showPanel)
   }
 </script>
 
 {#if showPanel}
-  <Box>
+  <Box {showPanel}>
+
     <div class="row">
+      <button class = "close-button" on:click={closeBox}> 
+        <span class="icon-cross"> x</span> </button>
         <div class="col-md-1">
             {#each countyData as d}
                 <!-- add more county level stats here if you want to -->
@@ -193,6 +204,29 @@
   h3 {
       text-align: center;
       margin:1px;
+  }
+
+
+  .close-button {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: hsl(216, 100, 50);
+  width: 10px;
+  height: 10px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 150ms;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  }
+
+  .icon-cross {
+    @include cross(40px, #fff, 6px);   
   }
 
 </style>
