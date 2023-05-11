@@ -40,6 +40,7 @@
       {#each xScale.ticks() as tickValue}
         <g transform={`translate(${xScale(tickValue)},0)`}>
           <line y2={innerHeight} stroke="black" />
+
           <text text-anchor="middle" dy=".7em" y={innerHeight + 3}>
             {tickValue}
           </text>
@@ -55,6 +56,8 @@
         >
           {d.scale}
         </text>
+
+        <line x1="0" y1="110" x2="220" y2="110" stroke="black" />
 
         <!-- <rect
           x="0"
