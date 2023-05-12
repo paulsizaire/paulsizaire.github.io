@@ -1,7 +1,7 @@
 <script>
   import * as d3 from "d3";
   import { onMount } from "svelte";
-  import { writable } from "svelte/store";
+  import { setContext } from "svelte";
   import PanelApp from "../../components/PanelApp.svelte";
 
   let unemployment = [];
@@ -35,6 +35,17 @@
   let offsetY;
   let svg;
   let zoom;
+
+  setContext("resetIsolation", () => {
+    resetIsolation();
+  });
+  setContext("setShowPanelFalse", () => {
+    setShowPanelFalse();
+  });
+
+  function setShowPanelFalse() {
+    showPanel = false;
+  }
 
   onMount(async () => {
     const requestURL =
@@ -216,6 +227,7 @@
     resetIsolation();
     isolateFeature(countyFeature);
     showPanel = true;
+    console.log(showPanel);
   }
 
   function handleCountySelection_modal(event) {
@@ -359,11 +371,19 @@
           return d !== feature;
         })
         .attr("fill-opacity", 0.3);
+      chart.g
+        .selectAll("path")
+        .filter(function (d) {
+          return d === feature;
+        })
+        .attr("stroke-opacity", 1)
+        .attr("stroke", "orange");
     }
   }
 
   function resetIsolation() {
     chart.g.selectAll("path").attr("fill-opacity", 1);
+    chart.g.selectAll("path").attr("stroke-opacity", 0);
   }
 
   function resetZoom() {
@@ -415,7 +435,6 @@
     // Compute default domains.
     if (domain === undefined) domain = [d3.min(V), d3.mean(V), d3.max(V)];
     // if (domain === undefined) domain = d3.extent(V);
-    console.log(domain);
 
     // Construct scales.
     const color = d3
@@ -555,6 +574,124 @@
       handleCountySelection({ target: { value: selectedCounty } });
     }
 
+    // Add the legend SVG to the legendContainer div
+    const legendContainer = d3
+      .select("#legendContainer")
+      .style("position", "relative"); // Set the position to relative
+    const legendWidth = 400;
+    const legendHeight = 60;
+    const legendMargin = { top: 20, right: 20, bottom: 20 };
+
+    const legendSvg = legendContainer
+      .append("svg")
+      .attr("width", legendWidth + legendMargin.right)
+      .attr("height", legendHeight)
+      .style("display", "block") // Set the display to block to ensure the SVG occupies the full width of the container
+      .style("margin", "0 auto"); // Center the SVG within the container
+
+    const legendGradient = legendSvg
+      .append("defs")
+      .append("linearGradient")
+      .attr("id", "legend-gradient")
+      .attr("x1", "0%")
+      .attr("x2", "100%")
+      .attr("y1", "0%")
+      .attr("y2", "0%");
+
+    legendGradient
+      .selectAll("stop")
+      .data(
+        color.ticks().map((d, i, n) => ({
+          offset: `${(100 * i) / n.length}%`,
+          color: color(d),
+        }))
+      )
+      .enter()
+      .append("stop")
+      .attr("offset", (d) => d.offset)
+      .attr("stop-color", (d) => d.color);
+
+    const legend = legendSvg
+      .append("rect")
+      .attr("x", legendMargin.right)
+      .attr("y", legendMargin.top)
+      .attr("width", legendWidth - legendMargin.right)
+      .attr("height", legendHeight - legendMargin.top - legendMargin.bottom)
+      .style("fill", "url(#legend-gradient)");
+
+    const minValue = Math.min(...V);
+    const meanValue = V.reduce((partialSum, a) => partialSum + a, 0) / V.length;
+    const maxValue = Math.max(...V);
+
+    const tickValues = [
+      minValue,
+      (minValue + meanValue) / 2,
+      meanValue,
+      meanValue + (maxValue - meanValue) / 3,
+      meanValue + (2 * (maxValue - meanValue)) / 3,
+      maxValue,
+    ];
+
+    // Add a separate group for the tick labels
+    const tickGroup = legendSvg
+      .append("g")
+      .attr(
+        "transform",
+        `translate(${legendMargin.right}, ${legendHeight / 2})`
+      );
+
+    // Add text labels for each tick along the legend
+    tickGroup
+      .selectAll(".legend-label")
+      .data(tickValues)
+      .enter()
+      .append("text")
+      .attr("class", "legend-label")
+      .attr(
+        "x",
+        (d) =>
+          ((d - minValue) / (maxValue - minValue)) *
+          (legendWidth - legendMargin.right)
+      )
+      .attr("y", -15) // Adjust the y-coordinate to position the labels above the legend
+      .attr("text-anchor", "middle")
+      .text((d) => Math.round(10 ** d))
+      .style("font-size", "12px");
+
+    // Add the start label below the legend
+    tickGroup
+      .append("text")
+      .attr("class", "legend-label")
+      .attr("x", 0)
+      .attr("y", 25) // Adjust the y-coordinate to position the label below the legend
+      .attr("text-anchor", "start")
+      .text("least vulnerable")
+      .style("font-size", "12px");
+
+    // Add the end label below the legend
+    tickGroup
+      .append("text")
+      .attr("class", "legend-label")
+      .attr("x", legendWidth - legendMargin.right)
+      .attr("y", 25) // Adjust the y-coordinate to position the label below the legend
+      .attr("text-anchor", "end")
+      .text("most vulnerable")
+      .style("font-size", "12px");
+
+    // Add the end label below the legend
+    tickGroup
+      .append("text")
+      .attr("class", "legend-label")
+      .attr(
+        "x",
+        ((meanValue - minValue) / (maxValue - minValue)) *
+          (legendWidth - legendMargin.right)
+      )
+      .attr("y", 25) // Adjust the y-coordinate to position the label below the legend
+      .attr("text-anchor", "middle")
+      .text("avg")
+      .style("font-size", "12px");
+
     const chartProperties = {
       node: svg.node(),
       scales: { color },
@@ -587,7 +724,7 @@
         mg_pop: (d) => d.migrant_pop,
         // scale: d3.scaleLinear,
         domain: [0.253002, 0.946957, 1.303415, 1.574287, 3.306079],
-        range: ["#005194", "#70a8ca", "#e0e0e0", "#dcab77", "#a42900"],
+        range: ["#006193", "#70a8ca", "#e0e0e0", "#dcab77", "#a12e00"],
         // title: (f, d) =>
         //     `${f.properties.name}, ${
         //         statemap.get(f.id.slice(0, 2)).properties.name
@@ -643,9 +780,11 @@
 
   // add function that closes the box and resets the zoom and county selection
   function resetView() {
-    showPanel = false;
+    setShowPanelFalse();
     resetZoom();
     resetIsolation();
+    document.getElementById("state-select").value = "";
+    document.getElementById("county-select").value = "";
   }
 </script>
 
@@ -689,7 +828,19 @@
     </div>
   </div>
 </div>
-<PanelApp {FIPScode} {showPanel} />
+
+<PanelApp {FIPScode} {showPanel} on:resetIsolation_closeBox={resetIsolation} />
+
+<div
+  class="panel"
+  style="position: fixed; top: 60px; left: calc(100% - 440px); width: 410px; height: 90px; z-index:900; text-align: center;"
+>
+  <h4 style="margin: 0">
+    Carbon footprint per employee (tons CO2 per employee)
+  </h4>
+  <div id="legendContainer" style="top: 0px" />
+</div>
+
 <button
   on:click={resetView}
   style="position: absolute; top: 310px; left: 10px; z-index: 999;"
