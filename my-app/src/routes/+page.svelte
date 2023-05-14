@@ -4,16 +4,6 @@
     import { onMount } from "svelte";
     import * as d3 from "d3";
 
-    import { openModal } from "svelte-modals";
-    import Modal from "./Modal.svelte";
-
-    function handleClick() {
-        openModal(Modal, {
-            title: "The Employee Carbon Footprint Explained",
-            message: "Here is an explanation of all our fantastic work",
-        });
-    }
-
     let map;
     let sliderValue = 0;
 
@@ -231,10 +221,6 @@
                 <hr />
                 <p>Some text..</p>
             </div>
-        </div>
-
-        <div>
-            <button on:click={handleClick}>Open Modal</button>
         </div>
     </div>
     <div class="column right">

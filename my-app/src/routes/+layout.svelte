@@ -1,7 +1,3 @@
-<script>
-    import { Modals, closeModal } from "svelte-modals";
-</script>
-
 <nav class="navbar">
     <ul>
         <li><a class="nav-link" href="/">Map</a></li>
@@ -10,10 +6,6 @@
 </nav>
 
 <slot />
-
-<Modals>
-    <div slot="backdrop" class="backdrop" on:click={closeModal} />
-</Modals>
 
 <style>
     .navbar {
