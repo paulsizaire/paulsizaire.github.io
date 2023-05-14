@@ -9,12 +9,22 @@
   export let message1;
   export let message2;
   export let step;
+  export let customProp;
 
-  console.log(step);
 </script>
 
 {#if isOpen}
-  {#if step === 0}:
+  {#if step === -1}:
+    <div role="dialog" class="modal1">
+      <div class="contents">
+        <h2>{title}</h2>
+        <p>{message}</p>
+        <div class="actions">
+          <button on:click={closeModal}>Close</button>
+        </div>
+      </div>
+    </div>
+  {:else if step === 0}:
     <div role="dialog" class="modal1">
       <div class="contents">
         <h2>{title}</h2>
@@ -71,17 +81,14 @@
 
 <style>
   .modal1 {
-    position: absolute;
-    top: 50px;
-    left: 800px;
-    width: 400px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
-    justify-content: left;
-    align-items: left;
-
-    /* allow click-through to backdrop */
-    pointer-events: none;
-    font-family: "Cardo", serif;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
   }
 
   .modal2 {

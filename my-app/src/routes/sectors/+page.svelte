@@ -112,24 +112,36 @@
   }
 
   // modal functions
-  let step = 0;
-
   import { openModal } from "svelte-modals";
   import Modal from "./Modal.svelte";
+  let step = -1;
+  let beginTutorial = false;
+
+  openModal(Modal, {
+    title:
+      "Welcome to the Migrant Employment & the Energy Transition (MEET) tool",
+    message:
+      'This tool allows users to explore how energy transition vulnerability intersects with migrant populations in the United States. After closing this message, click "Start tutorial" on the left-hand side to be guided through the MEET tool, or start exploring on your own.',
+    step: step,
+    customProp: handleClick
+  });
 
   function handleClick() {
     if (step === 0) {
-      resetView();
       openModal(Modal, {
-        title: "Migrants and the Energy Transition",
+        title:
+          "Welcome to the Migrant Employment & the Energy Transition (MEET) tool",
         message:
-          "Employment is the greatest motivator for migration to the U.S., and migrant workers often face challenging economic conditions upon their arrival, especially if they are undocumented. At the same time, the U.S. energy transition has begun to deeply disrupt the U.S. economy and workforce, with the move away from carbon-intensive industries placing communities that depend on them at risk of economic displacement and job losses. Policymakers are separately beginning to address both of these challenges, however to date there has been little attention paid specifically to migrants and undocumented workers in carbon-intensive communities that may be disproportionately affected by economic shocks from the energy transition. Workforce development policies need to better understand the intersection between migrant employment pathway challenges and the disruption of communities as the economy decarbonizes.",
+          "Employment is the greatest motivator for migration to the U.S., and migrant workers often face challenging economic conditions upon their arrival, especially if they are undocumented. At the same time, the energy transition is disrupting the U.S. economy and workforce, placing communities that depend on carbon-intensive industries at risk of economic displacement and job losses. There has been little policy attention paid specifically to migrants and undocumented workers in carbon-intensive communities that may be disproportionately affected by economic shocks from the energy transition, and workforce development policies need to better understand the intersection between migrant employment challenges and the disruption of communities as the economy decarbonizes.",
         message1:
-          "This tool is designed to allow users to explore this intersection. Using publically available data, we calculate the average employee carbon footprint (ECF) of every county in the U.S. as a measure of its economic vulnerability to economic shocks during the energy transition, and map these ECFs across the U.S. We supplement this data with data from the American Community Survey on the migrant populations in these counties.",
-        message2: 'Click "Next Step" to be guided through the tool.',
+          "This tool is designed to allow users to explore this intersection. Using publically available data, we calculate the average employee carbon footprint (ECF) of every county in the U.S. as a measure of its economic vulnerability to economic shocks during the energy transition, and map these carbon footprints across the U.S. We supplement this data with data from the American Community Survey on the migrant populations in these counties.",
+        message2: 'Click "OK" then "Next Step" to be guided through the tool.',
         step: step,
       });
     }
+
+    handleCountySelection_modal();
+
     if (step === 1) {
       openModal(Modal, {
         title:
@@ -158,7 +170,7 @@
         title:
           "Some areas with high migrant populations are also highly vulnerable",
         message:
-          "West Texas counties such as Gaines County have both large migrant populations and signficiant employment vulnerability to the energy transition due to the significant presence of the oil and gas industry in the region. These communities will face unique challenges as the country decarbonizes in managing the specific vulnerabilities to economic displacement migrants in the region may face.",
+          "West Texas counties such as Gaines County have both large migrant populations and signficiant employment vulnerability to the energy transition due to the presence of the oil and gas industry in the region. These communities will face unique challenges as the country decarbonizes in managing the specific vulnerabilities to economic displacement migrants in the region may face.",
         step: step,
       });
 
@@ -180,11 +192,17 @@
     step += 1;
   }
 
-  function resetStep() {
+  function resetTutorial() {
     step = 0;
     selectedCounty = "";
-    resetZoom();
-    resetIsolation();
+    beginTutorial = false;
+    resetView();
+  }
+
+  function redoTutorial() {
+    resetTutorial();
+    beginTutorial = true;
+    handleClick();
   }
 
   // selection functions
@@ -276,6 +294,8 @@
         } else {
           FIPScode = "";
         }
+        // document.getElementById("state-select").value = selectedState;
+        // document.getElementById("county-select").value = selectedCounty;
       }
       if (step === 2) {
         console.log("zoom to county");
@@ -844,7 +864,7 @@
   </div>
 </div>
 
-<PanelApp {FIPScode} {showPanel} on:resetIsolation_closeBox={resetIsolation} />
+<PanelApp {FIPScode} {showPanel} />
 
 <div
   class="panel"
@@ -858,39 +878,50 @@
 
 <button
   on:click={resetView}
-  style="position: absolute; top: 250px; left: 80px; z-index: 999;"
+  style="position: absolute; top: 250px; left: 35px; z-index: 999;"
   >Reset view</button
 >
 
 <div id="chart-container" />
 
-<div class="tutorial">
-  {#if step === 0}
-    <!-- <h2>Welcome to the Tutorial!</h2>
-    <p>Step 1 content goes here...</p> -->
-    <button on:click={handleClick}>Start tutorial</button>
-  {:else if step === 1}
-    <!-- <h2>Step 2: county!</h2>
-    <p>zoom to county.</p> -->
-    <button on:click={handleClick}>Next Step</button>
-  {:else if step === 2}
-    <!-- <h2>Step 3: Play with filter</h2>
-    <p>Play w/ filter</p> -->
-    <button on:click={handleClick}>Next Step</button>
-  {:else if step === 3}
-    <!-- <h2>Step 4: Play with filter</h2>
-    <p>Play w/ filter</p> -->
-    <button on:click={handleClick}>Next Step</button>
-  {:else if step === 4}
-    <!-- <h2>Step 4: Play with filter</h2>
-    <p>Play w/ filter</p> -->
-    <button on:click={handleClick}>Next Step</button>
-  {:else if step === 5}
-    <!-- <h2>Step 4: Play with filter</h2>
-    <p>Play w/ filter</p> -->
-    <button on:click={resetStep}>Reset</button>
-  {/if}
-</div>
+<button
+  style="position: absolute; top: 250px; left: 125px; z-index: 999;"
+  on:click={redoTutorial}>Start tutorial</button
+>
+
+{#if beginTutorial === true}
+  <div class="tutorial">
+    {#if step === 1}
+      <!-- <h2>Step 2: county!</h2>
+      <p>zoom to county.</p> -->
+      <button class="tutorial-button" on:click={handleClick}>Next step</button>
+    {:else if step === 2}
+      <!-- <h2>Step 3: Play with filter</h2>
+      <p>Play w/ filter</p> -->
+      <button class="tutorial-button" on:click={handleClick}>Next Step</button>
+    {:else if step === 3}
+      <!-- <h2>Step 4: Play with filter</h2>
+      <p>Play w/ filter</p> -->
+      <button class="tutorial-button" on:click={handleClick}>Next Step</button>
+    {:else if step === 4}
+      <!-- <h2>Step 4: Play with filter</h2>
+      <p>Play w/ filter</p> -->
+      <button class="tutorial-button" on:click={handleClick}>Next Step</button>
+    {:else if step === 5}
+      <!-- <h2>Step 4: Play with filter</h2>
+      <p>Play w/ filter</p> -->
+      <button class="tutorial-button" on:click={resetTutorial}
+        >Finish tutorial</button
+      >
+    {/if}
+  </div>
+{/if}
+
+<!-- {#if beginTutorial === false}
+  <div style="position: absolute; bottom: 20px; right: 50%">
+    asdf
+  </div>
+{/if} -->
 
 <style>
   #chart-container {
@@ -937,6 +968,32 @@
   }
 
   #county-select {
+    font-family: "Cardo", serif;
+  }
+
+  .tutorial-button {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+    font-family: "Cardo", serif;
+  }
+
+  .generic-button {
+    background-color: #808080;
+    border: none;
+    color: white;
+    padding: 4px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 4px;
     font-family: "Cardo", serif;
   }
 </style>
