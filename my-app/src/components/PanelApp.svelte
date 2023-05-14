@@ -4,7 +4,7 @@
   import EmploymentGraph from "./EmploymentGraph.svelte";
   import EmissionsGraph from "./EmissionsGraph.svelte";
   import ECF_BarGraph from "./ECF_BarGraph.svelte";
-  import { getContext } from 'svelte';
+  import { getContext } from "svelte";
 
   //load socio-economic data
   let socioeconFile =
@@ -27,8 +27,8 @@
   export let FIPScode;
   export let showPanel;
 
-  let resetIsolation = getContext('resetIsolation');
-  let setShowPanelFalse = getContext('setShowPanelFalse');
+  let resetIsolation = getContext("resetIsolation");
+  let setShowPanelFalse = getContext("setShowPanelFalse");
 
   function closeBox() {
     setShowPanelFalse();
@@ -73,12 +73,16 @@
 
   async function fetchPanelData() {
     panel_data = await d3.csv(socioeconFile, function (d) {
+      let fips = d.FIPS;
+      if (fips.length === 4) {
+        fips = "0" + fips;
+      }
       return {
         county: d.COUNTY,
         state: d.STATE,
         population: d.POP,
         mig_pop: d.MIG_TOT,
-        FIPS: d.FIPS,
+        FIPS: fips,
         poverty_rate: d.POV_RATE,
         income: d.INC_IND_TOT,
         top_1: d.top_1,
@@ -89,6 +93,7 @@
   }
 
   $: {
+    console.log(FIPScode);
     FIPScode, fetchEmissionsData();
     FIPScode, fetchEmploymentData();
     FIPScode, fetchECFData();
@@ -97,6 +102,7 @@
 
   $: {
     countyData = panel_data.filter((d) => d.FIPS === FIPScode);
+    console.log(panel_data);
   }
 </script>
 
@@ -127,7 +133,7 @@
     </div>
     <div class="row">
       <div class="col-md-2">
-        <h2>ECF Comparison</h2>
+        <h2>Carbon footprint comparison</h2>
       </div>
       <div class="col-md-2">
         <h2>Industry Breakdown</h2>
@@ -168,7 +174,7 @@
   }
   .col-md-2 {
     flex: 10%;
-    padding: 1%;
+    padding: 0%;
   }
 
   .col-md-6 {
@@ -181,7 +187,7 @@
   }
   .col-md-1 {
     flex: 10%;
-    padding: 1%;
+    padding: 0%;
   }
 
   .graph {
@@ -192,16 +198,23 @@
   h1 {
     text-align: left;
     margin: 1px;
+    font-family: "Cardo", serif;
   }
 
   h2 {
     text-align: left;
     margin: 1px;
+    font-family: "Cardo", serif;
   }
 
   h3 {
     text-align: center;
     margin: 1px;
+    font-family: "Cardo", serif;
+  }
+
+  p {
+    font-family: "Cardo", serif;
   }
 
   .close-button {

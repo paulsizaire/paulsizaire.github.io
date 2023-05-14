@@ -7,7 +7,7 @@
   let width = 300;
   let height = 150;
 
-  const margin = { top: 20, right: 20, bottom: 20, left: 60 };
+  const margin = { top: 0, right: 20, bottom: 30, left: 60 };
   const innerHeight = height - margin.top - margin.bottom;
   const innerWidth = width - margin.left - margin.right;
 
@@ -57,7 +57,7 @@
           {d.scale}
         </text>
 
-        <line x1="0" y1="110" x2="220" y2="110" stroke="black" />
+        <line x1="0" y1="119" x2="220" y2="119" stroke="black" />
 
         <!-- <rect
           x="0"
@@ -77,22 +77,21 @@
           }}
         /> -->
         <rect
-        x="0"
-        y={yScale(d.scale)}
-        width={xScale(d.ECF)}
-        height={yScale.bandwidth()}
-        fill={barcolors[index].color}
-
-      />
+          x="0"
+          y={yScale(d.scale)}
+          width={xScale(d.ECF)}
+          height={yScale.bandwidth()}
+          fill={barcolors[index].color}
+        />
       {/each}
     </g>
   </svg>
-  <h3> tonnes CO2 per employee</h3>
+  <p>Carbon footprint per employee (tons CO2 per employee)</p>
 
   <div
     class={hovered === -1 ? "tooltip-hidden" : "tooltip-visible"}
-    style="left: {recorded_mouse_position.x - 90
-    }px; bottom: {recorded_mouse_position.y - 500}px"
+    style="left: {recorded_mouse_position.x -
+      90}px; bottom: {recorded_mouse_position.y - 500}px"
   >
     {#if hovered !== -1}
       {ecf_data[hovered].ECF}
@@ -102,11 +101,12 @@
 
 <style>
   .visualization {
-    font: 7px sans-serif;
+    font: 9px sans-serif;
     margin: 1px;
-    margin-top: 0.5px;
-    margin-left:-40px;
+    margin-top: 0px;
+    margin-left: -40px;
     text-align: middle;
+    font-family: "Cardo", serif;
     /* position:absolute; */
   }
 
@@ -118,7 +118,7 @@
   }
 
   .tooltip-visible {
-    font: 14px ;
+    font: 14px;
     visibility: visible;
     background-color: #dbdad6;
     border-radius: 5px;
@@ -131,10 +131,18 @@
   .xticks {
     transform: rotate(-90deg);
   }
- 
- h3 {
-  text-align: center;
-  margin-top:-5px;
-  margin-left:50px;
- }
+
+  h3 {
+    text-align: center;
+    margin-top: -5px;
+    margin-left: 50px;
+    font-family: "Cardo", serif;
+  }
+
+  p {
+    text-align: center;
+    margin-top: -15px;
+    margin-left: 40px;
+    font-family: "Cardo", serif;
+  }
 </style>

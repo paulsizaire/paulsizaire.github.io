@@ -4,7 +4,6 @@
 	function closeBox() {
 		showPanel = false;
 	}
-	console.log(showPanel, "Box!")
 
 
 </script>

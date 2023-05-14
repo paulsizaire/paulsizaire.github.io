@@ -197,7 +197,6 @@
 
     const stateFeature = statemap.get(selectedState);
     resetIsolation();
-    console.log(stateFeature.id);
     zoomToFeature(stateFeature);
     // const stateFIPS = d.id.slice(0, 2);
     isolateFeature(stateFeature);
@@ -223,17 +222,14 @@
     } else {
       FIPScode = "";
     }
-
     resetIsolation();
     isolateFeature(countyFeature);
     showPanel = true;
-    console.log(showPanel);
   }
 
   function handleCountySelection_modal(event) {
     if (event) {
       selectedCounty = event.target.value;
-      console.log(selectedCounty);
 
       const countyData = usnames.find(
         (row) =>
@@ -785,12 +781,13 @@
     resetIsolation();
     document.getElementById("state-select").value = "";
     document.getElementById("county-select").value = "";
+    migrantThreshold = 0;
   }
 </script>
 
 <div class="panel">
   <div class="box">
-    <h4>Migrant population share cutoff</h4>
+    <h4 style="margin: 0px; test-align: center">Migrant population share cutoff</h4>
     <div class="box">
       <input
         type="range"
@@ -803,7 +800,7 @@
     </div>
   </div>
   <div class="box">
-    <h4>Search</h4>
+    <h4 style="margin: 0px; text-align: center">Search</h4>
     <div>
       <label for="state-select">State:</label>
       <select
@@ -827,6 +824,9 @@
       </select>
     </div>
   </div>
+  <div class="box">
+    <p></p>
+  </div>
 </div>
 
 <PanelApp {FIPScode} {showPanel} on:resetIsolation_closeBox={resetIsolation} />
@@ -835,7 +835,7 @@
   class="panel"
   style="position: fixed; top: 60px; left: calc(100% - 440px); width: 410px; height: 90px; z-index:900; text-align: center;"
 >
-  <h4 style="margin: 0">
+  <h4 style="margin: 0; test-align: center">
     Carbon footprint per employee (tons CO2 per employee)
   </h4>
   <div id="legendContainer" style="top: 0px" />
@@ -843,7 +843,7 @@
 
 <button
   on:click={resetView}
-  style="position: absolute; top: 310px; left: 10px; z-index: 999;"
+  style="position: absolute; top: 250px; left: 80px; z-index: 999;"
   >Reset view</button
 >
 
@@ -898,6 +898,7 @@
     flex-direction: column;
     gap: 10px;
     z-index: 3;
+    font-family: 'Cardo', serif;
   }
 
   .box {
@@ -910,5 +911,17 @@
     position: absolute;
     bottom: 20px;
     right: 50px;
+  }
+
+  body {
+    font-family: 'Cardo', serif;
+  }
+
+  #state-select {
+    font-family: 'Cardo', serif;
+  }
+
+  #county-select {
+    font-family: 'Cardo', serif;
   }
 </style>
