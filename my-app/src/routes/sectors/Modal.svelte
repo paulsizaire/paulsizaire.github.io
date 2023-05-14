@@ -81,7 +81,7 @@
 
     /* allow click-through to backdrop */
     pointer-events: none;
-    font-family: "Bitter", serif;
+    font-family: "Cardo", serif;
   }
 
   .modal2 {
@@ -95,7 +95,7 @@
 
     /* allow click-through to backdrop */
     pointer-events: none;
-    font-family: "Bitter", serif;
+    font-family: "Cardo", serif;
   }
 
   .contents {
@@ -107,19 +107,19 @@
     flex-direction: column;
     justify-content: space-between;
     pointer-events: auto;
-    font-family: "Bitter", serif;
+    font-family: "Cardo", serif;
   }
 
   h2 {
     text-align: center;
     font-size: 24px;
-    font-family: "Bitter", serif;
+    font-family: "Cardo", serif;
   }
 
   p {
     text-align: justify;
     margin-top: 16px;
-    font-family: "Bitter", serif;
+    font-family: "Cardo", serif;
   }
 
   .actions {

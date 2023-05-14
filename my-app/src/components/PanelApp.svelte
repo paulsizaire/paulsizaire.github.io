@@ -93,7 +93,6 @@
   }
 
   $: {
-    console.log(FIPScode);
     FIPScode, fetchEmissionsData();
     FIPScode, fetchEmploymentData();
     FIPScode, fetchECFData();
@@ -102,7 +101,6 @@
 
   $: {
     countyData = panel_data.filter((d) => d.FIPS === FIPScode);
-    console.log(panel_data);
   }
 </script>
 
@@ -126,7 +124,7 @@
             {Math.round(d.mig_pop)} are migrants ({Math.round(
               (d.mig_pop * 100) / d.population
             )}%), mostly from {d.top_1}, {d.top_2}, and {d.top_3}. The county
-            median annual income is ${Math.round(d.income)}.
+            median annual income is ${Math.round(d.income)}, and the poverty rate is {Math.round(d.poverty_rate*100)}%.
           </p>
         {/each}
       </div>

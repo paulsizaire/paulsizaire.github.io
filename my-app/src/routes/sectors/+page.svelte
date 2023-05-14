@@ -190,6 +190,7 @@
   // selection functions
   function handleStateSelection(event) {
     selectedState = event.target.value;
+    document.getElementById("county-select").value = "";
     if (selectedState === "") {
       resetZoom();
       return;
@@ -364,9 +365,15 @@
       chart.g
         .selectAll("path")
         .filter(function (d) {
-          return d !== feature;
+          return d !== feature && d.id.slice(0, 2) !== feature.id.slice(0, 2);
         })
         .attr("fill-opacity", 0.3);
+      chart.g
+        .selectAll("path")
+        .filter(function (d) {
+          return d !== feature && d.id.slice(0, 2) === feature.id.slice(0, 2);
+        })
+        .attr("fill-opacity", 0.7);
       chart.g
         .selectAll("path")
         .filter(function (d) {
@@ -551,23 +558,29 @@
 
     function handleCountyClick(event, d) {
       // Set the selectedState and selectedCounty
+      const oldCounty = selectedCounty;
       const stateFIPS = d.id.slice(0, 2);
       const selectedStateInfo = states.features.find((d) => d.id === stateFIPS);
       selectedState = selectedStateInfo.properties.name;
       const stateFeature = statemap.get(selectedState);
       selectedCounty = d.properties.name;
 
-      // Isolate county
-      zoomToFeature(stateFeature);
-      isolateFeature(d);
+      if (oldCounty === selectedCounty) {
+        resetIsolation();
+        showPanel = false;
+      } else {
+        // Isolate county
+        zoomToFeature(stateFeature);
+        isolateFeature(d);
 
-      // Update the dropdowns with the selected state and county
-      document.getElementById("state-select").value = selectedState;
-      document.getElementById("county-select").value = selectedCounty;
-      selectState({ currentTarget: { value: selectedState } });
+        // Update the dropdowns with the selected state and county
+        document.getElementById("state-select").value = selectedState;
+        document.getElementById("county-select").value = selectedCounty;
+        selectState({ currentTarget: { value: selectedState } });
 
-      // Simulate an event to handle the county selection
-      handleCountySelection({ target: { value: selectedCounty } });
+        // Simulate an event to handle the county selection
+        handleCountySelection({ target: { value: selectedCounty } });
+      }
     }
 
     // Add the legend SVG to the legendContainer div
@@ -787,7 +800,9 @@
 
 <div class="panel">
   <div class="box">
-    <h4 style="margin: 0px; test-align: center">Migrant population share cutoff</h4>
+    <h4 style="margin: 0px; test-align: center">
+      Migrant population share cutoff
+    </h4>
     <div class="box">
       <input
         type="range"
@@ -825,7 +840,7 @@
     </div>
   </div>
   <div class="box">
-    <p></p>
+    <p />
   </div>
 </div>
 
@@ -898,7 +913,7 @@
     flex-direction: column;
     gap: 10px;
     z-index: 3;
-    font-family: 'Cardo', serif;
+    font-family: "Cardo", serif;
   }
 
   .box {
@@ -914,14 +929,14 @@
   }
 
   body {
-    font-family: 'Cardo', serif;
+    font-family: "Cardo", serif;
   }
 
   #state-select {
-    font-family: 'Cardo', serif;
+    font-family: "Cardo", serif;
   }
 
   #county-select {
-    font-family: 'Cardo', serif;
+    font-family: "Cardo", serif;
   }
 </style>
