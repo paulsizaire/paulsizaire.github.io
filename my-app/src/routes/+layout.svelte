@@ -1,41 +1,30 @@
+<script>
+    import { Modals, closeModal } from "svelte-modals";
+</script>
+
 <nav class="navbar">
-    <ul>
-        <li><a class="nav-link" href="/">Map</a></li>
-        <li><a class="nav-link" href="/sectors">Sectors</a></li>
-    </ul>
+    <h1 class="title">
+        The Migrant Employment & the Energy Transition (MEET) tool
+    </h1>
 </nav>
 
 <slot />
 
+<Modals>
+    <div slot="backdrop" class="backdrop" on:click={closeModal} />
+</Modals>
+
 <style>
     .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center horizontally */
         height: 50px;
-        background-color: lightblue;
+        background-color: white;
     }
 
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-
-    li {
-        float: left;
-    }
-
-    .nav-link {
-        display: block;
-        color: white;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
+    .title {
         font-weight: bold;
-    }
-
-    .nav-link:hover,
-    .nav-link.active {
-        text-decoration: underline;
     }
 
     .backdrop {
