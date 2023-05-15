@@ -550,7 +550,7 @@
             .attr("d", path)
             .on("click", handleCountyClick)
             .on("mouseover", function () {
-                d3.select(this).style("filter", "brightness(70%)"); // Apply brightness filter on hover
+                d3.select(this).style("filter", "brightness(80%)"); // Apply brightness filter on hover
             })
             .on("mouseout", function () {
                 d3.select(this).style("filter", null); // Reset filter on mouseout
@@ -781,7 +781,7 @@
                 domain: [0.253002, 0.946957, 1.303415, 1.574287, 3.306079],
                 range: ["#006193", "#70a8ca", "#e0e0e0", "#dcab77", "#a12e00"],
                 title: (f, d) =>
-                    `${f.properties.name}, ${d?.state} \n ${d?.ECF_log10} gCO2/employee`,
+                    `${f.properties.name}, ${d?.state} \n ${d?.ECF} tons CO2/employee`,
                 features: counties,
                 borders: statemesh,
                 width: 1400,

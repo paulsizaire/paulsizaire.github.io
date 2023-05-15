@@ -4,7 +4,7 @@
 
 <nav class="navbar">
     <h1 class="title">
-        The Migrant Employment & the Energy Transition (MEET) tool
+        Migrant Employment & the Energy Transition (MEET)
     </h1>
 </nav>
 
@@ -25,6 +25,7 @@
 
     .title {
         font-weight: bold;
+        font-family: "Cardo", serif;
     }
 
     .backdrop {
